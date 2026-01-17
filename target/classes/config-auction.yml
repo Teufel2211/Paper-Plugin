@@ -1,0 +1,50 @@
+# Paper Plugin Suite - Auction House Konfiguration
+
+auction:
+  enabled: true
+  
+  # Auktions-Einstellungen
+  auction-settings:
+    default-duration-hours: 24
+    min-duration-hours: 1
+    max-duration-hours: 168  # 1 Woche
+    
+  # Gebühren
+  fees:
+    listing-fee: 50.0
+    listing-fee-percentage: 0.5  # % vom Startpreis
+    sell-commission-percentage: 5.0
+    
+  # Limits
+  limits:
+    min-starting-price: 10.0
+    max-starting-price: 1000000.0
+    max-active-auctions-per-player: 50
+    min-bid-increase: 1.0
+    min-bid-increase-percentage: 0.1
+    
+  # Item-Blacklist
+  blacklist:
+    enabled: true
+    items:
+      - "BEDROCK"
+      - "END_PORTAL_FRAME"
+      - "COMMAND_BLOCK"
+      - "STRUCTURE_BLOCK"
+      - "BARRIER"
+      
+  # Sofortkaufoption
+  buyout:
+    enabled: true
+    buyout-multiplier: 1.5  # Startpreis x 1.5
+    
+  # Anti-Abuse
+  antiabuse:
+    logging: true
+    protect-against-bid-bots: true
+    min-bid-account-age-days: 0
+    
+  # Datenbank
+  database:
+    type: "file"  # "file" oder "mysql"
+    file-path: "data/auctions"

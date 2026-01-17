@@ -1,0 +1,88 @@
+# Paper Plugin Suite - Crates Konfiguration
+
+crates:
+  enabled: true
+  
+  # Crate-Typen
+  types:
+    common:
+      display-name: "§fCommon Crate"
+      rarity-color: "§f"
+      items:
+        stone:
+          item: "STONE"
+          amount: 64
+          weight: 30
+        cobblestone:
+          item: "COBBLESTONE"
+          amount: 64
+          weight: 25
+        oak_log:
+          item: "OAK_LOG"
+          amount: 32
+          weight: 20
+          
+    rare:
+      display-name: "§5Rare Crate"
+      rarity-color: "§5"
+      items:
+        diamond:
+          item: "DIAMOND"
+          amount: 4
+          weight: 15
+        emerald:
+          item: "EMERALD"
+          amount: 2
+          weight: 20
+          
+    epic:
+      display-name: "§aEpic Crate"
+      rarity-color: "§a"
+      items:
+        netherite_ingot:
+          item: "NETHERITE_INGOT"
+          amount: 1
+          weight: 10
+        dragon_egg:
+          item: "DRAGON_EGG"
+          amount: 1
+          weight: 5
+          
+  # Keys
+  keys:
+    physical-key-item: "TRIPWIRE_HOOK"
+    digital-keys-enabled: true
+    
+  # Cooldowns
+  cooldowns:
+    base-seconds: 30
+    per-crate-cooldown-enabled: true
+    
+  # Limits
+  limits:
+    max-daily-opens: 5
+    max-daily-per-type: 2
+    max-value-per-crate: 5000.0
+    
+  # Animation
+  animation:
+    enabled: true
+    animation-type: "SPINNING"  # "SPINNING", "RARITY", "SEQUENCE"
+    duration-seconds: 5
+    
+  # Rare-Roll Broadcast
+  broadcast:
+    on-rare-roll: true
+    broadcast-color: "§6"
+    broadcast-rarity-threshold: 10  # % unter dem Broadcast erfolgt
+    
+  # Anti-Abuse
+  antiabuse:
+    logging: true
+    log-high-value-drops: true
+    high-value-threshold: 1000.0
+    
+  # Datenbank
+  database:
+    type: "file"
+    file-path: "data/crates"

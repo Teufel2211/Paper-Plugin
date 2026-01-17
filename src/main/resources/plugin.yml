@@ -1,0 +1,145 @@
+name: PaperPluginSuite
+version: 1.0.0
+description: Complete feature plugin suite for Paper 1.21.10
+author: PaperServer
+main: de.paperserver.plugin.PaperPluginSuite
+api-version: 1.21
+
+depend:
+  - Vault
+  - LuckPerms
+
+softdepend: []
+
+commands:
+  rtp:
+    description: Teleport to random location
+    usage: /rtp [world]
+    aliases: [randomtp]
+    permission: plugin.rtp.use
+
+  npc:
+    description: Manage NPCs
+    usage: /npc <create|remove|look|trait> [args]
+    permission: plugin.npc.admin
+
+  auction:
+    description: Auction House commands
+    usage: /auction <create|bid|list|cancel> [args]
+    aliases: [ah]
+    permission: plugin.auction.use
+
+  shop:
+    description: Shop system commands
+    usage: /shop <buy|sell|create|list> [args]
+    permission: plugin.shop.use
+
+  spawn:
+    description: Teleport to server spawn
+    usage: /spawn [world]
+    permission: plugin.spawn.use
+
+  homes:
+    description: Home management
+    usage: /home [name]
+    permission: plugin.home.use
+
+  sethome:
+    description: Set a home location
+    usage: /sethome [name]
+    permission: plugin.home.set
+
+  delhome:
+    description: Delete a home location
+    usage: /delhome [name]
+    permission: plugin.home.del
+
+  tpa:
+    description: Request teleportation
+    usage: /tpa <player>
+    permission: plugin.tpa.send
+
+  tpahere:
+    description: Request player to teleport to you
+    usage: /tpahere <player>
+    permission: plugin.tpa.here
+
+  tpaccept:
+    description: Accept teleport request
+    usage: /tpaccept [player]
+    permission: plugin.tpa.accept
+
+  tpdeny:
+    description: Deny teleport request
+    usage: /tpdeny [player]
+    permission: plugin.tpa.deny
+
+  crate:
+    description: Crate management
+    usage: /crate <open|give|list|admin> [args]
+    permission: plugin.crate.use
+
+permissions:
+  plugin.rtp.*:
+    description: All RTP permissions
+    children:
+      plugin.rtp.use: true
+      plugin.rtp.bypasscooldown: false
+      plugin.rtp.bypasscost: false
+
+  plugin.npc.*:
+    description: All NPC permissions
+    children:
+      plugin.npc.admin: true
+
+  plugin.auction.*:
+    description: All Auction permissions
+    children:
+      plugin.auction.use: true
+      plugin.auction.admin: false
+
+  plugin.shop.*:
+    description: All Shop permissions
+    children:
+      plugin.shop.use: true
+      plugin.shop.create: false
+      plugin.shop.admin: false
+
+  plugin.spawn.*:
+    description: All Spawn permissions
+    children:
+      plugin.spawn.use: true
+      plugin.spawn.set: false
+
+  plugin.home.*:
+    description: All Home permissions
+    children:
+      plugin.home.use: true
+      plugin.home.set: true
+      plugin.home.del: true
+
+  plugin.tpa.*:
+    description: All TPA permissions
+    children:
+      plugin.tpa.send: true
+      plugin.tpa.accept: true
+      plugin.tpa.deny: true
+      plugin.tpa.here: false
+
+  plugin.crate.*:
+    description: All Crate permissions
+    children:
+      plugin.crate.use: true
+      plugin.crate.admin: false
+
+  admin.all:
+    description: Admin for all plugins
+    children:
+      plugin.rtp.*: true
+      plugin.npc.*: true
+      plugin.auction.*: true
+      plugin.shop.*: true
+      plugin.spawn.*: true
+      plugin.home.*: true
+      plugin.tpa.*: true
+      plugin.crate.*: true

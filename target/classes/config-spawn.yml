@@ -1,0 +1,45 @@
+# Paper Plugin Suite - Spawn Konfiguration
+
+spawn:
+  enabled: true
+  
+  # Spawn-Punkte
+  spawns:
+    default:
+      world: "world"
+      x: 0
+      y: 64
+      z: 0
+      yaw: 0
+      pitch: 0
+      
+  # Warmup
+  warmup:
+    enabled: true
+    seconds: 3
+    cancel-on-move: true
+    cancel-on-damage: true
+    
+  # Cooldown
+  cooldown:
+    base-seconds: 30
+    vip-seconds: 10
+    
+  # Safety
+  safety:
+    teleport-mode: "EXACT"  # "EXACT" oder "SAFE"
+    check-fall-damage: true
+    
+  # Welten-Spezifisch
+  world-spawns:
+    enabled: false
+    worlds:
+      world_nether:
+        x: 100
+        y: 65
+        z: 100
+        
+  # Anti-Abuse
+  antiabuse:
+    log-spawns: true
+    prevent-combat-log: true

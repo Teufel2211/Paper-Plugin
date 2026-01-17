@@ -1,0 +1,43 @@
+# Paper Plugin Suite - TPA Konfiguration
+
+tpa:
+  enabled: true
+  
+  # Timeout für Anfragen
+  timeout-seconds: 30
+  
+  # Warmup nach Annahme
+  warmup:
+    enabled: true
+    seconds: 3
+    cancel-on-move: true
+    cancel-on-damage: true
+    
+  # Cooldown
+  cooldown:
+    send-cooldown-seconds: 10
+    accept-cooldown-seconds: 5
+    
+  # Kosten
+  cost:
+    enabled: false
+    amount-sender: 0.0
+    amount-receiver: 0.0
+    
+  # TPA-Einstellungen
+  tpa-settings:
+    max-pending-requests: 5
+    allow-tpahere: true
+    allow-multiple-requests-per-player: false
+    
+  # Anti-Abuse
+  antiabuse:
+    rate-limit-per-minute: 10
+    block-list-enabled: true
+    prevent-combat-teleport: true
+    require-online: true
+    
+  # Datenbank
+  database:
+    type: "file"
+    file-path: "data/tpa"

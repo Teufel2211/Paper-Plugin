@@ -1,0 +1,54 @@
+# Paper Plugin Suite - Shop Konfiguration
+
+shop:
+  enabled: true
+  
+  # Admin-Shops
+  admin-shop:
+    enabled: true
+    name: "Admin Shop"
+    
+  # Player-Shops
+  player-shops:
+    enabled: true
+    max-per-player: 5
+    min-price: 0.1
+    max-price: 10000000.0
+    
+  # Shop-Typ
+  shop-type: "GUI"  # "GUI", "SIGN", "BOTH"
+  
+  # Steuern
+  tax:
+    enabled: true
+    seller-tax-percentage: 2.0
+    buyer-fee-percentage: 0.0
+    
+  # Ruf/Diskounts nach Rängen
+  rank-discounts:
+    default: 0.0
+    trusted: 5.0
+    vip: 10.0
+    premium: 15.0
+    
+  # Item-Kategorien
+  categories:
+    enabled: true
+    items:
+      - "BUILDING"
+      - "TOOLS"
+      - "WEAPONS"
+      - "ARMOR"
+      - "FOOD"
+      - "BLOCKS"
+      
+  # Anti-Exploit
+  antiexploit:
+    prevent-duping: true
+    log-transactions: true
+    max-transaction-value: 1000000.0
+    
+  # Datenbank
+  database:
+    type: "file"  # "file" oder "mysql"
+    file-path: "data/shops"

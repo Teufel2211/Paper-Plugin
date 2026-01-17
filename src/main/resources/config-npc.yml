@@ -1,0 +1,46 @@
+# Paper Plugin Suite - NPC Konfiguration
+
+npc:
+  enabled: true
+  
+  # Max NPCs pro Welt
+  max-per-world: 100
+  max-total: 500
+  
+  # AI Verhalten
+  ai:
+    default-behavior: STATIONARY  # STATIONARY, PATROL, LOOK
+    patrol-radius: 20
+    look-range: 20
+    rotation-speed: 2.0
+    
+  # Interaktionen
+  interactions:
+    enable-right-click: true
+    enable-left-click: false
+    hologram-height: 2.5
+    hologram-text-color: "§6"  # Gold
+    
+  # Shop-Integration
+  shop-integration:
+    enabled: true
+    
+  # Quest-Integration
+  quest-integration:
+    enabled: true
+    
+  # Teleporter-Integration
+  teleporter:
+    enabled: true
+    
+  # Automatisches Despawnen
+  auto-despawn:
+    enabled: true
+    after-restart-seconds: 30
+    
+  # Logging
+  logging:
+    enabled: true
+    log-interactions: true
+    log-creation: true
+    log-removal: true

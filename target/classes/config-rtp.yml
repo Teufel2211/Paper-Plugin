@@ -1,0 +1,62 @@
+# Paper Plugin Suite - RTP Konfiguration
+
+rtp:
+  enabled: true
+  
+  # Teleportier-Einstellungen
+  teleport:
+    min-distance: 100
+    max-distance: 10000
+    min-height: 60
+    max-height: 320
+    
+  # Sicherheitsprüfungen
+  safety:
+    check-lava: true
+    check-water: true
+    check-ground: true
+    check-block-above: true
+    check-bedrock: true
+    required-solid-blocks: 2
+    
+  # Biom-Filter
+  biome-whitelist:
+    - PLAINS
+    - FOREST
+    - BIRCH_FOREST
+    - DARK_FOREST
+    - DESERT
+    - SAVANNA
+    - TAIGA
+    - JUNGLE
+    - MOUNTAINS
+    - SNOWY_PLAINS
+    
+  # Cooldown und Kosten
+  cooldown:
+    base-seconds: 30
+    vip-seconds: 15
+    
+  cost:
+    enabled: true
+    amount: 100.0
+    currency-name: "Dollar"
+    
+  # Warmup (Delay mit Abbruch bei Bewegung)
+  warmup:
+    enabled: true
+    seconds: 3
+    cancel-on-move: true
+    cancel-on-damage: true
+    
+  # Blacklist-Welten (keine RTP in diesen Welten)
+  blacklist-worlds:
+    - "world_nether"
+    - "world_the_end"
+    
+  # Anti-Abuse
+  antiabuse:
+    max-per-hour: 10
+    spawn-farm-radius: 100
+    min-distance-to-players: 50
+    logging: true

@@ -1,0 +1,54 @@
+# Paper Plugin Suite - Homes Konfiguration
+
+homes:
+  enabled: true
+  
+  # Limits pro Spieler
+  home-limits:
+    default: 1
+    trusted: 3
+    vip: 10
+    premium: 20
+    
+  # Ermögliche Limits basierend auf Rängen
+  rank-based-limits:
+    enabled: true
+    
+  # Warmup und Cooldown
+  warmup:
+    enabled: true
+    seconds: 2
+    cancel-on-move: true
+    cancel-on-damage: true
+    
+  cooldown:
+    base-seconds: 20
+    vip-seconds: 5
+    
+  # Kosten pro Teleport
+  cost:
+    enabled: false
+    amount: 50.0
+    
+  # Blacklist-Welten
+  blacklist-worlds:
+    - "world_nether"
+    - "world_the_end"
+    
+  # Name-Regeln
+  name-validation:
+    min-length: 1
+    max-length: 20
+    allowed-chars: "a-zA-Z0-9_"
+    
+  # Teleport-Beschränkungen
+  restrictions:
+    cannot-set-in-pvp: false
+    cannot-set-in-claims: false
+    cannot-teleport-in-combat: true
+    cannot-teleport-in-pvp: false
+    
+  # Datenbank
+  database:
+    type: "file"  # "file" oder "mysql"
+    file-path: "data/homes"
