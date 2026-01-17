@@ -1,0 +1,10 @@
+# Paper Plugin Suite - Hauptkonfiguration
+
+# Hier können globale Einstellungen für alle Module vorgenommen werden.
+# Modulspezifische Einstellungen befinden sich in den jeweiligen config-MODULNAME.yml Dateien.
+
+general:
+  # Spracheinstellungen (z.B. "en_US", "de_DE")
+  language: "en_US"
+  # Debug-Modus aktivieren (für detailliertere Logs)
+  debug-mode: false
