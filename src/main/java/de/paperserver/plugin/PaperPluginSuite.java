@@ -170,10 +170,10 @@ public class PaperPluginSuite extends JavaPlugin {
         if (crateManager != null) getServer().getPluginManager().registerEvents(new CrateListener(crateManager), this);
 
         // Auction Listener
-        if (auctionManager != null) getServer().getPluginManager().registerEvents(new AuctionListener(auctionManager), this);
+        if (auctionManager != null) getServer().getPluginManager().registerEvents(new AuctionListener(this), this);
 
         // Shop Listener
-        if (shopManager != null) getServer().getPluginManager().registerEvents(new ShopListener(shopManager), this);
+        if (shopManager != null) getServer().getPluginManager().registerEvents(new ShopListener(this), this);
 
         // NPC Listener
         getServer().getPluginManager().registerEvents(new NPCListener(npcManager), this);

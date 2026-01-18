@@ -139,10 +139,12 @@ public class RTPManager {
 
         // Block above: allow passable or replaceable blocks (flowers, vines, torches, etc.)
         Material aboveType = above.getType();
-        if (aboveType.isSolid() && !aboveType.isReplaceable()) {
-            // Check if it's a safe transparent block
+        if (aboveType.isSolid()) {
+            // Allow only specific transparent/safe blocks above
             if (aboveType != Material.TALL_GRASS && aboveType != Material.SEAGRASS &&
-                aboveType != Material.WATER && aboveType != Material.CAVE_AIR) {
+                aboveType != Material.WATER && aboveType != Material.CAVE_AIR &&
+                aboveType != Material.VINE && aboveType != Material.GRASS &&
+                aboveType != Material.TALL_SEAGRASS) {
                 return false;
             }
         }
