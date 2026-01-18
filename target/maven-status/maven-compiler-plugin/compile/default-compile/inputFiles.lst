@@ -31,4 +31,6 @@ C:\Users\Steven\Desktop\Paper Plugin\src\main\java\de\paperserver\plugin\manager
 C:\Users\Steven\Desktop\Paper Plugin\src\main\java\de\paperserver\plugin\PaperPluginSuite.java
 C:\Users\Steven\Desktop\Paper Plugin\src\main\java\de\paperserver\plugin\commands\TPAHereCommand.java
 C:\Users\Steven\Desktop\Paper Plugin\src\main\java\de\paperserver\plugin\commands\SetHomeCommand.java
+C:\Users\Steven\Desktop\Paper Plugin\src\main\java\de\paperserver\plugin\commands\SellCommand.java
 C:\Users\Steven\Desktop\Paper Plugin\src\main\java\de\paperserver\plugin\commands\RTPCommand.java
+C:\Users\Steven\Desktop\Paper Plugin\src\main\java\de\paperserver\plugin\managers\MoneyScoreboardManager.java

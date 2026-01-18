@@ -80,6 +80,11 @@ commands:
     usage: /crate <open|give|list|admin> [args]
     permission: plugin.crate.use
 
+  sell:
+    description: Sell item in hand for money
+    usage: /sell <price>
+    permission: plugin.sell.use
+
 permissions:
   plugin.rtp.*:
     description: All RTP permissions
@@ -133,6 +138,11 @@ permissions:
       plugin.crate.use: true
       plugin.crate.admin: false
 
+  plugin.sell.*:
+    description: All Sell permissions
+    children:
+      plugin.sell.use: true
+
   admin.all:
     description: Admin for all plugins
     children:
@@ -144,3 +154,4 @@ permissions:
       plugin.home.*: true
       plugin.tpa.*: true
       plugin.crate.*: true
+      plugin.sell.*: true

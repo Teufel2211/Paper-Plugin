@@ -1,0 +1,3 @@
+de\paperserver\plugin\PaperPluginSuite.class
+de\paperserver\plugin\managers\SpawnManager.class
+de\paperserver\plugin\commands\SpawnCommand.class
