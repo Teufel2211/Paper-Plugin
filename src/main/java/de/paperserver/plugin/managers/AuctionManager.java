@@ -136,61 +136,6 @@ public class AuctionManager {
         return true;
     }
 
-    public boolean placeBid(Player bidder, int auctionId, double amount) {
-        if (!bidder.hasPermission("plugin.auction.bid")) {
-            bidder.sendMessage("§c✗ Du darfst nicht bieten!");
-            return false;
-        }
-
-        AuctionData auction = auctions.get(auctionId);
-        if (auction == null) {
-            bidder.sendMessage("§c✗ Auktion nicht gefunden!");
-            return false;
-        }
-
-        if (amount <= auction.highestBid) {
-            bidder.sendMessage("§c✗ Gebot muss höher als " + auction.highestBid + " sein!");
-            return false;
-        }
-
-        if (plugin.getEconomy() != null) {
-            if (!plugin.getEconomy().has(bidder, amount)) {
-                bidder.sendMessage("§c✗ Du hast nicht genug Geld!");
-                return false;
-            }
-
-            // withdraw new bidder amount
-            plugin.getEconomy().withdrawPlayer(bidder, amount);
-
-            // refund previous highest bidder
-            if (auction.highestBidder != null) {
-                java.util.UUID prev = auction.highestBidder;
-                double prevAmount = auction.highestBid;
-                org.bukkit.OfflinePlayer off = plugin.getServer().getOfflinePlayer(prev);
-                if (off.isOnline()) {
-                    plugin.getEconomy().depositPlayer(off.getPlayer(), prevAmount);
-                } else {
-                    try {
-                        plugin.getEconomy().depositPlayer(off.getName(), prevAmount);
-                    } catch (Exception ignore) {
-                        // best-effort refund for offline players
-                    }
-                }
-            }
-        }
-
-        auction.highestBid = amount;
-        auction.highestBidder = bidder.getUniqueId();
-        auction.bids.add(new BidData(bidder.getUniqueId(), amount));
-
-        bidder.sendMessage("§a✓ Gebot platziert: " + amount);
-        return true;
-    }
-
-    public AuctionData getAuction(int id) {
-        return auctions.get(id);
-    }
-
     public List<AuctionData> getAllAuctions() {
         return new ArrayList<>(auctions.values());
     }
@@ -207,7 +152,8 @@ public class AuctionManager {
             return false;
         }
 
-        double buyPrice = Math.max(auction.startingPrice, auction.highestBid);
+        // Buy at starting price (direct purchase)
+        double buyPrice = auction.startingPrice;
         if (plugin.getEconomy() != null) {
             if (!plugin.getEconomy().has(buyer, buyPrice)) {
                 buyer.sendMessage("§c✗ Du hast nicht genug Geld! Benötigt: " + buyPrice);

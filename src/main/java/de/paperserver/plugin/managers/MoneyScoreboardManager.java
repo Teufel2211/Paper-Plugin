@@ -18,21 +18,19 @@ public class MoneyScoreboardManager {
     }
 
     /**
-     * Create or update scoreboard for a player (only creates if it doesn't exist)
+     * Create or update scoreboard for a player (reset and create fresh)
      */
     public void setupScoreboard(Player player) {
         Scoreboard scoreboard = player.getScoreboard();
         
-        // Check if objective already exists
-        Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
-        if (objective != null) {
-            // Already exists, just update
-            updateMoneyDisplay(player);
-            return;
+        // Remove old objective if it exists
+        Objective oldObjective = scoreboard.getObjective(OBJECTIVE_NAME);
+        if (oldObjective != null) {
+            oldObjective.unregister();
         }
 
-        // Create new objective only if it doesn't exist
-        objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy", DISPLAY_NAME);
+        // Create fresh objective
+        Objective objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy", DISPLAY_NAME);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         updateMoneyDisplay(player);
@@ -47,7 +45,6 @@ public class MoneyScoreboardManager {
 
         if (objective == null) {
             setupScoreboard(player);
-            objective = scoreboard.getObjective(OBJECTIVE_NAME);
             return;
         }
 
@@ -56,10 +53,12 @@ public class MoneyScoreboardManager {
         }
 
         double balance = plugin.getEconomy().getBalance(player);
-        String displayText = formatBalance(balance);
 
-        // Update only the single entry (use player name as key to avoid duplicates)
-        objective.getScore(player.getName()).setScore((int) balance);
+        // Clear all old scores to prevent duplicates
+        objective.getScores(player.getName()).forEach(s -> objective.getScoreboard().resetScores(player.getName()));
+
+        // Set single entry with balance
+        objective.getScore("§6Geld: §e" + String.format("%.2f", balance)).setScore(1);
     }
 
     /**

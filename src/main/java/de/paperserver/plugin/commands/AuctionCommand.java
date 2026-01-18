@@ -60,20 +60,6 @@ public class AuctionCommand implements CommandExecutor {
                 }
                 break;
 
-            case "bid":
-                if (args.length < 3) {
-                    player.sendMessage("§c✗ Verwendung: /auction bid <auktion_id> <betrag>");
-                    return true;
-                }
-                try {
-                    int auctionId = Integer.parseInt(args[1]);
-                    double amount = Double.parseDouble(args[2]);
-                    auctionManager.placeBid(player, auctionId, amount);
-                } catch (NumberFormatException e) {
-                    player.sendMessage("§c✗ Ungültige ID oder Betrag!");
-                }
-                break;
-
             case "buy":
                 if (args.length < 2) {
                     player.sendMessage("§c✗ Verwendung: /auction buy <auktion_id>");
