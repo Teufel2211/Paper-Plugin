@@ -53,8 +53,12 @@ public class RTPManager {
         }
 
         // Kosten abziehen
+        double cost = plugin.getConfig().getDouble("rtp.cost.amount", 100.0);
         if (!deductCost(player)) {
-            player.sendMessage("§c✗ Du hast nicht genug Geld! Benötigt: " + getConfigDouble("cost.amount"));
+            double balance = plugin.getEconomy() != null ? plugin.getEconomy().getBalance(player) : 0;
+            player.sendMessage("§c✗ Du hast nicht genug Geld!");
+            player.sendMessage("§e  Dein Guthaben: §6" + balance);
+            player.sendMessage("§e  Kosten: §6" + cost);
             return false;
         }
 
@@ -211,6 +215,7 @@ public class RTPManager {
         }
 
         if (player.hasPermission("plugin.rtp.bypasscost")) {
+            player.sendMessage("§a✓ Kosten ignoriert (Permission).");
             return true;
         }
 
@@ -224,6 +229,7 @@ public class RTPManager {
         // Check if player has enough money
         if (balance >= cost) {
             plugin.getEconomy().withdrawPlayer(player, cost);
+            player.sendMessage("§6Gebühr: §c-" + cost);
             // Update scoreboard after cost deduction
             if (plugin.getMoneyScoreboardManager() != null) {
                 plugin.getMoneyScoreboardManager().updateMoneyDisplay(player);

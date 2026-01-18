@@ -58,7 +58,13 @@ public class SellCommand implements CommandExecutor {
         // Remove item
         player.getInventory().setItemInMainHand(null);
 
-        player.sendMessage("§a✓ Verkauft: " + inHand.getAmount() + "x " + materialName + " für §6" + totalPrice);
+        player.sendMessage("§a✓ Verkauft: " + inHand.getAmount() + "x " + materialName);
+        player.sendMessage("§6Ertrag: §a+" + totalPrice);
+        
+        // Update scoreboard
+        if (plugin.getMoneyScoreboardManager() != null) {
+            plugin.getMoneyScoreboardManager().updateMoneyDisplay(player);
+        }
 
         return true;
     }
