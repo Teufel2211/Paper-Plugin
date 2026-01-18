@@ -108,7 +108,7 @@ permissions:
     description: All Shop permissions
     children:
       plugin.shop.use: true
-      plugin.shop.create: false
+      plugin.shop.create: true
       plugin.shop.admin: false
 
   plugin.spawn.*:

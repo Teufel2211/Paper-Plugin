@@ -54,9 +54,8 @@ public class MoneyScoreboardManager {
 
         double balance = plugin.getEconomy().getBalance(player);
 
-        // Update player name and balance as separate lines
-        objective.getScore("§7" + player.getName()).setScore(10);
-        objective.getScore(formatBalance(balance)).setScore(9);
+        // Clear previous entry and set new balance (single entry with score 1)
+        objective.getScore(formatBalance(balance)).setScore(1);
     }
 
     /**
