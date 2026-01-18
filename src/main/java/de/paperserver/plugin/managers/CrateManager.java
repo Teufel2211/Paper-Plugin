@@ -166,11 +166,25 @@ public class CrateManager {
         if (cratesConfig == null || cratesFile == null) return;
         crateTypes.clear();
         if (cratesConfig.getConfigurationSection("crates") == null) return;
+        
+        // Skip non-crate keys like "enabled" and "cooldowns"
         for (String name : cratesConfig.getConfigurationSection("crates").getKeys(false)) {
+            // Skip configuration keys that aren't crate definitions
+            if (name.equals("enabled") || name.equals("cooldowns")) {
+                continue;
+            }
+            
             String path = "crates." + name;
+            
+            // Check if this is actually a crate type (has displayName)
+            if (!cratesConfig.contains(path + ".displayName")) {
+                continue;
+            }
+            
             String disp = cratesConfig.getString(path + ".displayName", name);
             CrateType ct = new CrateType(name, disp);
             ct.totalWeight = cratesConfig.getInt(path + ".totalWeight", 0);
+            
             if (cratesConfig.getConfigurationSection(path + ".items") != null) {
                 for (String ik : cratesConfig.getConfigurationSection(path + ".items").getKeys(false)) {
                     String p2 = path + ".items." + ik;
@@ -182,6 +196,7 @@ public class CrateManager {
                     ct.totalWeight += weight;
                 }
             }
+            
             crateTypes.put(name, ct);
         }
     }
