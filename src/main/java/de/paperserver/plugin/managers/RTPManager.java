@@ -110,24 +110,42 @@ public class RTPManager {
         Block below = loc.clone().add(0, -1, 0).getBlock();
         Block above = loc.clone().add(0, 1, 0).getBlock();
 
-        // Lava / Flüssigkeit Prüfung (inkl. Wasser)
-        if (cfg.getBoolean("safety.check-lava", true) || cfg.getBoolean("safety.check-water", true)) {
-            if (block.isLiquid() || below.isLiquid()) return false;
-        }
-
-        // Block über Kopf muss nicht solid sein
-        if (cfg.getBoolean("safety.check-block-above", true)) {
-            if (above.getType().isSolid()) return false;
-        }
-
-        // Fester Boden: below sollte solid sein
-        if (cfg.getBoolean("safety.check-ground", true)) {
-            if (!below.getType().isSolid()) return false;
-        }
-
-        // Avoid spawning on lava, cactus, fire, magma
+        // Primary check: ground must be solid and not dangerous
         Material belowType = below.getType();
-        if (belowType == Material.CACTUS || belowType == Material.FIRE || belowType == Material.MAGMA_BLOCK) return false;
+        
+        // If block below is solid and not lava/hazard, it's safe
+        if (belowType.isSolid()) {
+            // Avoid only dangerous blocks like lava, cactus, fire, magma
+            if (belowType == Material.LAVA || belowType == Material.CACTUS || 
+                belowType == Material.FIRE || belowType == Material.MAGMA_BLOCK) {
+                return false;
+            }
+        } else {
+            // Not solid: check if it's water (acceptable for swimming) or air (fall damage risk)
+            if (belowType == Material.LAVA) {
+                return false;
+            }
+            // Water is okay for fallback, air is risky but allow if desperate
+            if (belowType == Material.AIR || block.getType() == Material.WATER || 
+                block.getType() == Material.LAVA) {
+                return false; // Too dangerous
+            }
+        }
+
+        // Avoid liquid in current location (player would suffocate)
+        if (block.isLiquid()) {
+            return false;
+        }
+
+        // Block above: allow passable or replaceable blocks (flowers, vines, torches, etc.)
+        Material aboveType = above.getType();
+        if (aboveType.isSolid() && !aboveType.isReplaceable()) {
+            // Check if it's a safe transparent block
+            if (aboveType != Material.TALL_GRASS && aboveType != Material.SEAGRASS &&
+                aboveType != Material.WATER && aboveType != Material.CAVE_AIR) {
+                return false;
+            }
+        }
 
         return true;
     }

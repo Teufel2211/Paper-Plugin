@@ -57,8 +57,15 @@ public class ShopListener implements Listener {
                 if (slot >= ids.size()) return;
                 int itemId = ids.get(slot);
                 boolean ok = shopManager.buyItem(p, shopId, itemId);
-                if (ok) p.sendMessage(ChatColor.GREEN + "✓ Kauf erfolgreich.");
-                else p.sendMessage(ChatColor.RED + "✗ Kauf fehlgeschlagen.");
+                if (ok) {
+                    p.sendMessage(ChatColor.GREEN + "✓ Kauf erfolgreich.");
+                    // Update scoreboard after purchase
+                    if (plugin.getMoneyScoreboardManager() != null) {
+                        plugin.getMoneyScoreboardManager().updateMoneyDisplay(p);
+                    }
+                } else {
+                    p.sendMessage(ChatColor.RED + "✗ Kauf fehlgeschlagen.");
+                }
             } catch (NumberFormatException ignored) {}
         }
     }

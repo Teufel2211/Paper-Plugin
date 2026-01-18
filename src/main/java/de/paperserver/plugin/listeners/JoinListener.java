@@ -24,5 +24,11 @@ public class JoinListener implements Listener {
         p.sendMessage("/homes, /sethome, /delhome - Home Verwaltung");
         p.sendMessage("/tpa /tpahere /tpaccept /tpdeny - Teleport-Anfragen");
         p.sendMessage("/crate - Crate Befehle");
+        p.sendMessage("/sell <preis> - Verkaufe Item in deiner Hand");
+        
+        // Setup money scoreboard
+        if (plugin.getMoneyScoreboardManager() != null) {
+            plugin.getMoneyScoreboardManager().setupScoreboard(p);
+        }
     }
 }

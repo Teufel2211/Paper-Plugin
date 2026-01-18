@@ -24,6 +24,7 @@ public class PaperPluginSuite extends JavaPlugin {
     private HomeManager homeManager;
     private TPAManager tpaManager;
     private CrateManager crateManager;
+    private MoneyScoreboardManager moneyScoreboardManager;
 
     @Override
     public void onEnable() {
@@ -110,6 +111,7 @@ public class PaperPluginSuite extends JavaPlugin {
             homeManager = new HomeManager(this);
             tpaManager = new TPAManager(this);
             crateManager = new CrateManager(this);
+            moneyScoreboardManager = new MoneyScoreboardManager(this);
             Logger.info("§a✓ Alle Manager initialisiert.");
         } catch (Exception e) {
             Logger.error("§cKritischer Fehler beim Initialisieren der Manager: " + e.getMessage());
@@ -148,6 +150,8 @@ public class PaperPluginSuite extends JavaPlugin {
         
         if (crateManager != null) getCommand("crate").setExecutor(new CrateCommand(crateManager));
         if (crateManager != null) getCommand("crate").setTabCompleter(new de.paperserver.plugin.commands.CommandSuggestions(this));
+        
+        if (economy != null) getCommand("sell").setExecutor(new SellCommand(this));
 
         Logger.info("§a✓ Verfügbare Commands registriert.");
     }
@@ -165,8 +169,15 @@ public class PaperPluginSuite extends JavaPlugin {
         // Crate Listener
         if (crateManager != null) getServer().getPluginManager().registerEvents(new CrateListener(crateManager), this);
 
+        // Auction Listener
+        if (auctionManager != null) getServer().getPluginManager().registerEvents(new AuctionListener(auctionManager), this);
+
+        // Shop Listener
+        if (shopManager != null) getServer().getPluginManager().registerEvents(new ShopListener(shopManager), this);
+
         // NPC Listener
         getServer().getPluginManager().registerEvents(new NPCListener(npcManager), this);
+        
         // Join Listener: show commands on join
         getServer().getPluginManager().registerEvents(new de.paperserver.plugin.listeners.JoinListener(this), this);
 
@@ -215,5 +226,9 @@ public class PaperPluginSuite extends JavaPlugin {
 
     public CrateManager getCrateManager() {
         return crateManager;
+    }
+
+    public MoneyScoreboardManager getMoneyScoreboardManager() {
+        return moneyScoreboardManager;
     }
 }
