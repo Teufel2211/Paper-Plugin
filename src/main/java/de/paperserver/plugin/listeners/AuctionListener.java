@@ -30,22 +30,20 @@ public class AuctionListener implements Listener {
 
         if (title != null && title.contains("Auction House")) {
             e.setCancelled(true);
-            else {
-                // Clicked an auction slot -> try place quick bid (min increment)
-                int slot = e.getRawSlot();
-                if (slot >= 0) {
-                    AuctionManager.AuctionData a = null;
-                    try {
-                        a = auctionManager.getAllAuctions().get(slot);
-                    } catch (Exception ex) {
-                        // ignore
-                    }
-                    if (a != null) {
-                        double min = Math.max(a.startingPrice, a.highestBid + 1.0);
-                        boolean ok = auctionManager.placeBid(p, a.id, min);
-                        if (ok) p.sendMessage(ChatColor.GREEN + "✓ Geboten: " + min);
-                        else p.sendMessage(ChatColor.RED + "✗ Gebot fehlgeschlagen. Nutze /auction bid <id> <betrag>");
-                    }
+            // Clicked an auction slot -> try place quick bid (min increment)
+            int slot = e.getRawSlot();
+            if (slot >= 0) {
+                AuctionManager.AuctionData a = null;
+                try {
+                    a = auctionManager.getAllAuctions().get(slot);
+                } catch (Exception ex) {
+                    // ignore
+                }
+                if (a != null) {
+                    double min = Math.max(a.startingPrice, a.highestBid + 1.0);
+                    boolean ok = auctionManager.placeBid(p, a.id, min);
+                    if (ok) p.sendMessage(ChatColor.GREEN + "✓ Geboten: " + min);
+                    else p.sendMessage(ChatColor.RED + "✗ Gebot fehlgeschlagen. Nutze /auction bid <id> <betrag>");
                 }
             }
         }
