@@ -48,27 +48,7 @@ public class AuctionListener implements Listener {
             }
         }
 
-        if (title != null && title.contains("Create Auction")) {
-            e.setCancelled(true);
-            if (e.getRawSlot() == 2) {
-                // Cancel
-                p.closeInventory();
-                p.sendMessage(ChatColor.RED + "✗ Erstellung abgebrochen.");
-                return;
-            }
-            if (e.getRawSlot() == 6) {
-                // Confirm: take item from slot 4
-                ItemStack item = e.getView().getItem(4);
-                if (item == null || item.getType().isAir()) {
-                    p.sendMessage(ChatColor.RED + "✗ Lege zuerst ein Item in Slot 5 ein.");
-                    return;
-                }
-                // store pending and ask for starting price in chat
-                auctionManager.startPendingCreation(p, item);
-                p.closeInventory();
-                p.sendMessage(ChatColor.YELLOW + "Bitte gib jetzt im Chat den Startpreis ein (z.B. 100.0)");
-            }
-        }
+        // Create Auction GUI and chat-based creation removed: use /auction create while holding an item instead.
     }
 
     @EventHandler
@@ -76,35 +56,5 @@ public class AuctionListener implements Listener {
         // noop
     }
 
-    @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent e) {
-        Player p = e.getPlayer();
-        if (!auctionManagerHasPending(p)) return;
-        e.setCancelled(true);
-        String msg = e.getMessage();
-        try {
-            double price = Double.parseDouble(msg.trim());
-            // finalize on main thread
-            plugin.getServer().getScheduler().runTask(plugin, () -> {
-                boolean ok = auctionManager.finalizePendingCreation(p, price);
-                if (ok) p.sendMessage(ChatColor.GREEN + "✓ Auktion erstellt mit Startpreis: " + price);
-                else p.sendMessage(ChatColor.RED + "✗ Auktion konnte nicht erstellt werden.");
-            });
-        } catch (NumberFormatException ex) {
-            p.sendMessage(ChatColor.RED + "✗ Ungültiger Preis. Vorgang abgebrochen.");
-            auctionManager.startPendingCreation(p, null); // clear
-        }
-    }
-
-    private boolean auctionManagerHasPending(Player p) {
-        try {
-            java.lang.reflect.Field f = AuctionManager.class.getDeclaredField("pendingCreations");
-            f.setAccessible(true);
-            Object map = f.get(auctionManager);
-            if (map instanceof java.util.Map) {
-                return ((java.util.Map) map).containsKey(p.getUniqueId());
-            }
-        } catch (Exception ignore) {}
-        return false;
-    }
+    // Chat-based pending creation removed; creation must be done via command (/auction create while holding an item).
 }

@@ -36,7 +36,21 @@ public class CrateManager {
 
     public CrateManager(PaperPluginSuite plugin) {
         this.plugin = plugin;
+        ensureDataFolder();
         loadCrates();
+    }
+
+    private File cratesFile;
+    private org.bukkit.configuration.file.YamlConfiguration cratesConfig;
+
+    private void ensureDataFolder() {
+        File dataFolder = plugin.getDataFolder();
+        if (!dataFolder.exists()) dataFolder.mkdirs();
+        cratesFile = new File(dataFolder, "crates.yml");
+        if (!cratesFile.exists()) {
+            try { cratesFile.createNewFile(); } catch (Exception ignore) {}
+        }
+        cratesConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(cratesFile);
     }
 
     public boolean openCrate(Player player, String crateName) {
@@ -116,10 +130,43 @@ public class CrateManager {
     }
 
     public void saveCrates() {
-        // Placeholder für Datenspeicherung
+        if (cratesConfig == null || cratesFile == null) return;
+        cratesConfig.set("crates", null);
+        for (CrateType ct : crateTypes.values()) {
+            String path = "crates." + ct.name;
+            cratesConfig.set(path + ".displayName", ct.displayName);
+            cratesConfig.set(path + ".totalWeight", ct.totalWeight);
+            for (Map.Entry<String, CrateItem> e : ct.items.entrySet()) {
+                String p2 = path + ".items." + e.getKey();
+                cratesConfig.set(p2 + ".itemName", e.getValue().itemName);
+                cratesConfig.set(p2 + ".amount", e.getValue().amount);
+                cratesConfig.set(p2 + ".weight", e.getValue().weight);
+            }
+        }
+        try { cratesConfig.save(cratesFile); } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     public void loadCrates() {
-        // Placeholder für Datenladen
+        if (cratesConfig == null || cratesFile == null) return;
+        crateTypes.clear();
+        if (cratesConfig.getConfigurationSection("crates") == null) return;
+        for (String name : cratesConfig.getConfigurationSection("crates").getKeys(false)) {
+            String path = "crates." + name;
+            String disp = cratesConfig.getString(path + ".displayName", name);
+            CrateType ct = new CrateType(name, disp);
+            ct.totalWeight = cratesConfig.getInt(path + ".totalWeight", 0);
+            if (cratesConfig.getConfigurationSection(path + ".items") != null) {
+                for (String ik : cratesConfig.getConfigurationSection(path + ".items").getKeys(false)) {
+                    String p2 = path + ".items." + ik;
+                    String itemName = cratesConfig.getString(p2 + ".itemName", "");
+                    int amount = cratesConfig.getInt(p2 + ".amount", 1);
+                    int weight = cratesConfig.getInt(p2 + ".weight", 1);
+                    CrateItem ci = new CrateItem(itemName, amount, weight);
+                    ct.items.put(ik, ci);
+                    ct.totalWeight += weight;
+                }
+            }
+            crateTypes.put(name, ct);
+        }
     }
 }

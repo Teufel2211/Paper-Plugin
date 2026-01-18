@@ -33,13 +33,25 @@ public class AuctionCommand implements CommandExecutor {
 
         switch (subcommand) {
             case "create":
-                if (args.length < 3) {
-                    player.sendMessage("§c✗ Verwendung: /auction create <item> <preis>");
+                // Usage: /auction create <preis> (halte ein Item in der Hand)
+                if (args.length < 2) {
+                    player.sendMessage("§c✗ Verwendung: /auction create <preis> (halte ein Item in der Hand)");
                     return true;
                 }
                 try {
-                    double price = Double.parseDouble(args[2]);
-                    auctionManager.createAuction(player, args[1], price);
+                    double price = Double.parseDouble(args[1]);
+                    org.bukkit.inventory.ItemStack inHand = player.getInventory().getItemInMainHand();
+                    if (inHand == null || inHand.getType().isAir()) {
+                        player.sendMessage("§c✗ Halte ein Item in der Hand, das du versteigern möchtest.");
+                        return true;
+                    }
+                    boolean ok = auctionManager.createAuction(player, inHand.clone(), price, player.getServer().getPluginManager().getPlugin("PaperPluginSuite").getConfig().getLong("auction.default-duration-ms", 24 * 60 * 60 * 1000));
+                    if (ok) {
+                        // consume one item
+                        int amount = inHand.getAmount();
+                        if (amount <= 1) player.getInventory().setItemInMainHand(null);
+                        else inHand.setAmount(amount - 1);
+                    }
                 } catch (NumberFormatException e) {
                     player.sendMessage("§c✗ Ungültiger Preis!");
                 }

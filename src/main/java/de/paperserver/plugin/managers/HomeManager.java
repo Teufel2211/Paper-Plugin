@@ -13,6 +13,7 @@ public class HomeManager {
 
     public HomeManager(PaperPluginSuite plugin) {
         this.plugin = plugin;
+        ensureDataFolder();
         loadHomes();
     }
 
@@ -118,10 +119,39 @@ public class HomeManager {
     }
 
     public void saveHomes() {
-        // Placeholder für Datenspeicherung
+        try {
+            File dataFolder = plugin.getDataFolder();
+            if (!dataFolder.exists()) dataFolder.mkdirs();
+            File file = new File(dataFolder, "homes.yml");
+            org.bukkit.configuration.file.YamlConfiguration cfg = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(file);
+            cfg.set("homes", null);
+            for (Map.Entry<UUID, Map<String, Location>> e : playerHomes.entrySet()) {
+                String p = e.getKey().toString();
+                for (Map.Entry<String, Location> he : e.getValue().entrySet()) {
+                    cfg.set("homes." + p + "." + he.getKey(), he.getValue());
+                }
+            }
+            cfg.save(file);
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     public void loadHomes() {
-        // Placeholder für Datenladen
+        try {
+            File dataFolder = plugin.getDataFolder();
+            if (!dataFolder.exists()) dataFolder.mkdirs();
+            File file = new File(dataFolder, "homes.yml");
+            if (!file.exists()) return;
+            org.bukkit.configuration.file.YamlConfiguration cfg = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(file);
+            if (cfg.getConfigurationSection("homes") == null) return;
+            for (String playerId : cfg.getConfigurationSection("homes").getKeys(false)) {
+                UUID uuid = UUID.fromString(playerId);
+                Map<String, Location> homes = new HashMap<>();
+                for (String homeName : cfg.getConfigurationSection("homes." + playerId).getKeys(false)) {
+                    Location loc = (Location) cfg.get("homes." + playerId + "." + homeName);
+                    if (loc != null) homes.put(homeName, loc);
+                }
+                playerHomes.put(uuid, homes);
+            }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
 }

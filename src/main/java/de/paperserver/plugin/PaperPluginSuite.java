@@ -167,6 +167,8 @@ public class PaperPluginSuite extends JavaPlugin {
 
         // NPC Listener
         getServer().getPluginManager().registerEvents(new NPCListener(npcManager), this);
+        // Join Listener: show commands on join
+        getServer().getPluginManager().registerEvents(new de.paperserver.plugin.listeners.JoinListener(this), this);
 
         Logger.info("§a✓ Alle Listener registriert.");
     }

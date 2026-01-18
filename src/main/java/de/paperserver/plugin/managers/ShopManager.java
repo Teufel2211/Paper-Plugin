@@ -42,7 +42,21 @@ public class ShopManager {
 
     public ShopManager(PaperPluginSuite plugin) {
         this.plugin = plugin;
+        ensureDataFolder();
         loadShops();
+    }
+
+    private File shopsFile;
+    private org.bukkit.configuration.file.YamlConfiguration shopsConfig;
+
+    private void ensureDataFolder() {
+        File dataFolder = plugin.getDataFolder();
+        if (!dataFolder.exists()) dataFolder.mkdirs();
+        shopsFile = new File(dataFolder, "shops.yml");
+        if (!shopsFile.exists()) {
+            try { shopsFile.createNewFile(); } catch (Exception ignore) {}
+        }
+        shopsConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(shopsFile);
     }
 
     public boolean createShop(Player creator, String shopName) {
@@ -191,10 +205,50 @@ public class ShopManager {
     }
 
     public void saveShops() {
-        // Placeholder für Datenspeicherung
+        if (shopsConfig == null || shopsFile == null) return;
+        shopsConfig.set("shops", null);
+        for (ShopData s : shops.values()) {
+            String path = "shops." + s.id;
+            shopsConfig.set(path + ".id", s.id);
+            shopsConfig.set(path + ".name", s.name);
+            shopsConfig.set(path + ".owner", s.owner.toString());
+            shopsConfig.set(path + ".type", s.type);
+            shopsConfig.set(path + ".itemIdCounter", s.itemIdCounter);
+            for (ShopItem si : s.items.values()) {
+                String p2 = path + ".items." + si.id;
+                shopsConfig.set(p2 + ".id", si.id);
+                shopsConfig.set(p2 + ".item", si.item);
+                shopsConfig.set(p2 + ".price", si.price);
+            }
+        }
+        try { shopsConfig.save(shopsFile); } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     public void loadShops() {
-        // Placeholder für Datenladen
+        if (shopsConfig == null || shopsFile == null) return;
+        shops.clear();
+        if (shopsConfig.getConfigurationSection("shops") == null) return;
+        for (String key : shopsConfig.getConfigurationSection("shops").getKeys(false)) {
+            String path = "shops." + key;
+            int id = shopsConfig.getInt(path + ".id", -1);
+            if (id < 0) continue;
+            String name = shopsConfig.getString(path + ".name", "shop");
+            UUID owner = UUID.fromString(shopsConfig.getString(path + ".owner"));
+            ShopData s = new ShopData(id, name, owner);
+            s.type = shopsConfig.getString(path + ".type", "PLAYER");
+            s.itemIdCounter = shopsConfig.getInt(path + ".itemIdCounter", 0);
+            if (shopsConfig.getConfigurationSection(path + ".items") != null) {
+                for (String ik : shopsConfig.getConfigurationSection(path + ".items").getKeys(false)) {
+                    String p2 = path + ".items." + ik;
+                    int iid = shopsConfig.getInt(p2 + ".id", -1);
+                    if (iid < 0) continue;
+                    ItemStack item = shopsConfig.getItemStack(p2 + ".item");
+                    double price = shopsConfig.getDouble(p2 + ".price", 0.0);
+                    s.items.put(iid, new ShopItem(iid, item, price));
+                }
+            }
+            shops.put(s.id, s);
+            shopIdCounter = Math.max(shopIdCounter, s.id + 1);
+        }
     }
 }

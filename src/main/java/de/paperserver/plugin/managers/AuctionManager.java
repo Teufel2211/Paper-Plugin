@@ -1,8 +1,13 @@
 package de.paperserver.plugin.managers;
 
 import de.paperserver.plugin.PaperPluginSuite;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.io.File;
 import java.util.*;
 
 public class AuctionManager {
@@ -51,7 +56,25 @@ public class AuctionManager {
 
     public AuctionManager(PaperPluginSuite plugin) {
         this.plugin = plugin;
+        ensureDataFolder();
         loadAuctions();
+        // start expiration checker every minute
+        Bukkit.getScheduler().runTaskTimer(plugin, this::checkExpiredAuctions, 20L * 60L, 20L * 60L);
+    }
+
+    private File auctionsFile;
+    private YamlConfiguration auctionsConfig;
+
+    private void ensureDataFolder() {
+        File dataFolder = plugin.getDataFolder();
+        if (!dataFolder.exists()) dataFolder.mkdirs();
+        auctionsFile = new File(dataFolder, "auctions.yml");
+        if (!auctionsFile.exists()) {
+            try {
+                auctionsFile.createNewFile();
+            } catch (Exception ignore) {}
+        }
+        auctionsConfig = YamlConfiguration.loadConfiguration(auctionsFile);
     }
 
     // Pending creation flow: player places an ItemStack into a temporary slot and then types starting price in chat
@@ -96,8 +119,18 @@ public class AuctionManager {
             return false;
         }
 
+        double listingFee = plugin.getConfig().getDouble("auction.fees.listing-fee", 50.0);
+        if (plugin.getEconomy() != null && !plugin.getEconomy().has(seller, listingFee)) {
+            seller.sendMessage("§c✗ Du hast nicht genug Geld für die Auktionsgebühr!");
+            return false;
+        }
+
         AuctionData auction = new AuctionData(auctionIdCounter++, seller.getUniqueId(), item, null, startingPrice, System.currentTimeMillis() + durationMs);
         auctions.put(auction.id, auction);
+
+        if (plugin.getEconomy() != null) {
+            plugin.getEconomy().withdrawPlayer(seller, listingFee);
+        }
 
         seller.sendMessage("§a✓ Auktion erstellt! ID: " + auction.id);
         return true;
@@ -120,9 +153,30 @@ public class AuctionManager {
             return false;
         }
 
-        if (plugin.getEconomy() != null && !plugin.getEconomy().has(bidder, amount)) {
-            bidder.sendMessage("§c✗ Du hast nicht genug Geld!");
-            return false;
+        if (plugin.getEconomy() != null) {
+            if (!plugin.getEconomy().has(bidder, amount)) {
+                bidder.sendMessage("§c✗ Du hast nicht genug Geld!");
+                return false;
+            }
+
+            // withdraw new bidder amount
+            plugin.getEconomy().withdrawPlayer(bidder, amount);
+
+            // refund previous highest bidder
+            if (auction.highestBidder != null) {
+                java.util.UUID prev = auction.highestBidder;
+                double prevAmount = auction.highestBid;
+                org.bukkit.OfflinePlayer off = plugin.getServer().getOfflinePlayer(prev);
+                if (off.isOnline()) {
+                    plugin.getEconomy().depositPlayer(off.getPlayer(), prevAmount);
+                } else {
+                    try {
+                        plugin.getEconomy().depositPlayer(off.getName(), prevAmount);
+                    } catch (Exception ignore) {
+                        // best-effort refund for offline players
+                    }
+                }
+            }
         }
 
         auction.highestBid = amount;
@@ -142,10 +196,104 @@ public class AuctionManager {
     }
 
     public void saveAuctions() {
-        // Placeholder für Datenspeicherung
+        if (auctionsConfig == null || auctionsFile == null) return;
+        auctionsConfig.set("auctions", null);
+        for (Map.Entry<Integer, AuctionData> e : auctions.entrySet()) {
+            String path = "auctions." + e.getKey();
+            AuctionData a = e.getValue();
+            auctionsConfig.set(path + ".id", a.id);
+            auctionsConfig.set(path + ".seller", a.seller.toString());
+            auctionsConfig.set(path + ".item", a.item);
+            auctionsConfig.set(path + ".itemName", a.itemName);
+            auctionsConfig.set(path + ".startingPrice", a.startingPrice);
+            auctionsConfig.set(path + ".highestBid", a.highestBid);
+            auctionsConfig.set(path + ".highestBidder", a.highestBidder != null ? a.highestBidder.toString() : null);
+            auctionsConfig.set(path + ".endTime", a.endTime);
+        }
+        try {
+            auctionsConfig.save(auctionsFile);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void loadAuctions() {
-        // Placeholder für Datenladen
+        if (auctionsConfig == null || auctionsFile == null) return;
+        auctions.clear();
+        auctionIdCounter = 0;
+        if (auctionsConfig.getConfigurationSection("auctions") == null) return;
+        for (String key : auctionsConfig.getConfigurationSection("auctions").getKeys(false)) {
+            String path = "auctions." + key;
+            int id = auctionsConfig.getInt(path + ".id", -1);
+            if (id < 0) continue;
+            UUID seller = UUID.fromString(auctionsConfig.getString(path + ".seller"));
+            ItemStack item = auctionsConfig.getItemStack(path + ".item");
+            String itemName = auctionsConfig.getString(path + ".itemName");
+            double startingPrice = auctionsConfig.getDouble(path + ".startingPrice", 0.0);
+            double highestBid = auctionsConfig.getDouble(path + ".highestBid", startingPrice);
+            String hb = auctionsConfig.getString(path + ".highestBidder", null);
+            UUID highestBidder = hb != null ? UUID.fromString(hb) : null;
+            long endTime = auctionsConfig.getLong(path + ".endTime", System.currentTimeMillis() + (24 * 60 * 60 * 1000));
+
+            AuctionData a = new AuctionData(id, seller, item, itemName, startingPrice, endTime);
+            a.highestBid = highestBid;
+            a.highestBidder = highestBidder;
+            auctions.put(a.id, a);
+            auctionIdCounter = Math.max(auctionIdCounter, id + 1);
+        }
+    }
+
+    private void checkExpiredAuctions() {
+        long now = System.currentTimeMillis();
+        List<Integer> toRemove = new ArrayList<>();
+        for (AuctionData a : new ArrayList<>(auctions.values())) {
+            if (a.endTime <= now) {
+                // finalize
+                if (a.highestBidder != null) {
+                    // pay seller
+                    try {
+                        org.bukkit.OfflinePlayer seller = plugin.getServer().getOfflinePlayer(a.seller);
+                        if (plugin.getEconomy() != null) {
+                            plugin.getEconomy().depositPlayer(seller.getName(), a.highestBid);
+                        }
+                        // deliver item to winner if online
+                        org.bukkit.entity.Player winner = plugin.getServer().getPlayer(a.highestBidder);
+                        if (winner != null && winner.isOnline()) {
+                            java.util.HashMap<Integer, ItemStack> leftover = winner.getInventory().addItem(a.item.clone());
+                            if (!leftover.isEmpty()) winner.getWorld().dropItemNaturally(winner.getLocation(), leftover.values().iterator().next());
+                            winner.sendMessage("§a✓ Du hast eine Auktion gewonnen (ID: " + a.id + ")!");
+                        } else {
+                            // store item as pending claim
+                            String path = "pending." + a.highestBidder + "." + a.id;
+                            auctionsConfig.set(path + ".item", a.item);
+                            auctionsConfig.set(path + ".info", "Won auction " + a.id + " but was offline; claim from server admin or via /claim");
+                            try { auctionsConfig.save(auctionsFile); } catch (Exception ignore) {}
+                        }
+                        // notify seller if online
+                        if (seller.isOnline()) seller.getPlayer().sendMessage("§a✓ Deine Auktion #" + a.id + " wurde verkauft für " + a.highestBid);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    // no bids: return item to seller if online, else store as pending
+                    org.bukkit.OfflinePlayer seller = plugin.getServer().getOfflinePlayer(a.seller);
+                    if (seller.isOnline()) {
+                        org.bukkit.entity.Player s = seller.getPlayer();
+                        java.util.HashMap<Integer, ItemStack> leftover = s.getInventory().addItem(a.item.clone());
+                        if (!leftover.isEmpty()) s.getWorld().dropItemNaturally(s.getLocation(), leftover.values().iterator().next());
+                        s.sendMessage("§a✓ Deine Auktion #" + a.id + " ist beendet: kein Gebot. Item retour.");
+                    } else {
+                        String path = "pending." + a.seller + "." + a.id;
+                        auctionsConfig.set(path + ".item", a.item);
+                        auctionsConfig.set(path + ".info", "Auction ended without bids; item returned to seller");
+                        try { auctionsConfig.save(auctionsFile); } catch (Exception ignore) {}
+                    }
+                }
+
+                toRemove.add(a.id);
+            }
+        }
+        for (Integer id : toRemove) auctions.remove(id);
+        if (!toRemove.isEmpty()) saveAuctions();
     }
 }

@@ -41,7 +41,12 @@ public class RTPManager {
         }
 
         // Antrag auf Koordinaten
+        // primary search
         Location randomLocation = findSafeLocation(world);
+        if (randomLocation == null) {
+            // fallback: try near player to avoid wide open-area failures
+            randomLocation = findSafeNear(player, world);
+        }
         if (randomLocation == null) {
             player.sendMessage("§c✗ Keine sichere Location gefunden! Versuche später erneut.");
             return false;
@@ -214,6 +219,34 @@ public class RTPManager {
 
     private boolean isWorldBlacklisted(String worldName) {
         return plugin.getConfig().getStringList("rtp.blacklist-worlds").contains(worldName);
+    }
+
+    private Location findSafeNear(Player player, World world) {
+        ConfigurationSection cfg = plugin.getConfig().getConfigurationSection("rtp");
+        if (cfg == null) return null;
+
+        int maxDist = Math.max(1, cfg.getInt("teleport.max-distance", 10000));
+        int fallbackRadius = Math.min(maxDist, cfg.getInt("teleport.fallback-max-distance", 1000));
+        int attempts = cfg.getInt("teleport.fallback-attempts", 200);
+
+        Random random = ThreadLocalRandom.current();
+        Location center = player.getLocation();
+
+        for (int i = 0; i < attempts; i++) {
+            int dx = random.nextInt(fallbackRadius * 2 + 1) - fallbackRadius;
+            int dz = random.nextInt(fallbackRadius * 2 + 1) - fallbackRadius;
+
+            int x = center.getBlockX() + dx;
+            int z = center.getBlockZ() + dz;
+
+            int highestY = world.getHighestBlockYAt(x, z);
+            int y = highestY;
+
+            Location loc = new Location(world, x + 0.5, y + 1, z + 0.5);
+            if (isSafeLocation(loc)) return loc;
+        }
+
+        return null;
     }
 
     private boolean getConfigBoolean(String path) {
