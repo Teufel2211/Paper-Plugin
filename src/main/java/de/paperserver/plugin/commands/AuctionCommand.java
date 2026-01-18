@@ -24,7 +24,8 @@ public class AuctionCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            player.sendMessage("§c✗ Verwendung: /auction <create|bid|list|cancel> [args]");
+            // open GUI
+            player.openInventory(de.paperserver.plugin.gui.AuctionGUI.createMainInventory(auctionManager));
             return true;
         }
 

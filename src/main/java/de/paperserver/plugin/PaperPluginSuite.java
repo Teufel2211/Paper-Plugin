@@ -156,7 +156,7 @@ public class PaperPluginSuite extends JavaPlugin {
         if (crateManager != null) getServer().getPluginManager().registerEvents(new CrateListener(crateManager), this);
 
         // NPC Listener
-        if (npcManager != null) getServer().getPluginManager().registerEvents(new NPCListener(npcManager), this);
+        getServer().getPluginManager().registerEvents(new NPCListener(npcManager), this);
 
         Logger.info("§a✓ Alle Listener registriert.");
     }
