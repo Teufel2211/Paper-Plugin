@@ -60,9 +60,17 @@ public class CrateCommand implements CommandExecutor {
                 break;
 
             case "list":
-                sender.sendMessage("§6=== Verfügbare Crates ===");
-                for (CrateManager.CrateType type : crateManager.getAllCrateTypes()) {
-                    sender.sendMessage("§7- " + type.displayName);
+                System.out.println("§a[CRATE COMMAND DEBUG] /crate list called");
+                System.out.println("§a[CRATE COMMAND DEBUG] Total crates available: " + crateManager.getAllCrateTypes().size());
+                sender.sendMessage("§6=== Available Crates ===");
+                if (crateManager.getAllCrateTypes().isEmpty()) {
+                    sender.sendMessage("§c✗ No crates loaded!");
+                    System.out.println("§c[CRATE COMMAND DEBUG] No crates found!");
+                } else {
+                    for (CrateManager.CrateType type : crateManager.getAllCrateTypes()) {
+                        System.out.println("§a[CRATE COMMAND DEBUG] Listing crate: " + type.name + " -> " + type.displayName);
+                        sender.sendMessage("§7- " + type.displayName);
+                    }
                 }
                 break;
 

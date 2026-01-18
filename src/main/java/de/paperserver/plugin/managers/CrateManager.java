@@ -163,14 +163,26 @@ public class CrateManager {
     }
 
     public void loadCrates() {
-        if (cratesConfig == null || cratesFile == null) return;
+        if (cratesConfig == null || cratesFile == null) {
+            System.out.println("§c[CRATE DEBUG] cratesConfig or cratesFile is null!");
+            return;
+        }
         crateTypes.clear();
-        if (cratesConfig.getConfigurationSection("crates") == null) return;
+        
+        System.out.println("§a[CRATE DEBUG] Loading crates from: " + cratesFile.getAbsolutePath());
+        
+        if (cratesConfig.getConfigurationSection("crates") == null) {
+            System.out.println("§c[CRATE DEBUG] No 'crates' section found in config!");
+            return;
+        }
+        
+        System.out.println("§a[CRATE DEBUG] Found crates section with keys: " + cratesConfig.getConfigurationSection("crates").getKeys(false));
         
         // Skip non-crate keys like "enabled" and "cooldowns"
         for (String name : cratesConfig.getConfigurationSection("crates").getKeys(false)) {
             // Skip configuration keys that aren't crate definitions
             if (name.equals("enabled") || name.equals("cooldowns")) {
+                System.out.println("§a[CRATE DEBUG] Skipping config key: " + name);
                 continue;
             }
             
@@ -178,10 +190,13 @@ public class CrateManager {
             
             // Check if this is actually a crate type (has displayName)
             if (!cratesConfig.contains(path + ".displayName")) {
+                System.out.println("§c[CRATE DEBUG] Skipping " + name + " - no displayName found");
                 continue;
             }
             
             String disp = cratesConfig.getString(path + ".displayName", name);
+            System.out.println("§a[CRATE DEBUG] Loading crate: " + name + " -> " + disp);
+            
             CrateType ct = new CrateType(name, disp);
             ct.totalWeight = cratesConfig.getInt(path + ".totalWeight", 0);
             
@@ -194,10 +209,13 @@ public class CrateManager {
                     CrateItem ci = new CrateItem(itemName, amount, weight);
                     ct.items.put(ik, ci);
                     ct.totalWeight += weight;
+                    System.out.println("§a[CRATE DEBUG]   - Item: " + itemName + " (x" + amount + ", weight " + weight + ")");
                 }
             }
             
             crateTypes.put(name, ct);
         }
+        
+        System.out.println("§a[CRATE DEBUG] Total crates loaded: " + crateTypes.size());
     }
 }
