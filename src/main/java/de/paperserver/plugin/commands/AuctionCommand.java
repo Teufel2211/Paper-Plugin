@@ -45,7 +45,7 @@ public class AuctionCommand implements CommandExecutor {
                         player.sendMessage("§c✗ Halte ein Item in der Hand, das du versteigern möchtest.");
                         return true;
                     }
-                    double listingFee = auctionManager.getListingFee();
+                    double listingFee = player.getServer().getPluginManager().getPlugin("PaperPluginSuite").getConfig().getDouble("auction.fees.listing-fee", 50.0);
                     boolean ok = auctionManager.createAuction(player, inHand.clone(), price, player.getServer().getPluginManager().getPlugin("PaperPluginSuite").getConfig().getLong("auction.default-duration-ms", 24 * 60 * 60 * 1000));
                     if (ok) {
                         player.sendMessage("§a✓ Auktion erstellt!");
