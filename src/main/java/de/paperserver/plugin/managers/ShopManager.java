@@ -180,7 +180,7 @@ public class ShopManager {
             }
         }
 
-        // give item and decrease shop stock
+        // give item to player (but don't consume shop stock - items are infinite)
         org.bukkit.inventory.ItemStack toGive = si.item.clone();
         toGive.setAmount(1); // Only give 1 item to player
         org.bukkit.entity.Player p = buyer;
@@ -190,16 +190,8 @@ public class ShopManager {
             leftover.values().forEach(it -> p.getWorld().dropItemNaturally(p.getLocation(), it));
         }
 
-        // Remove item from shop stock
-        int itemAmount = si.item.getAmount();
-        if (itemAmount > 1) {
-            si.item.setAmount(itemAmount - 1);
-            buyer.sendMessage("§a✓ Gekauft für §6" + si.price + "§a! (" + (itemAmount - 1) + " verbleibend)");
-        } else {
-            // Item is sold out, remove it from shop
-            shop.items.remove(itemId);
-            buyer.sendMessage("§a✓ Gekauft für §6" + si.price + "§a! Dieses Item ist nun ausverkauft.");
-        }
+        // Items in shops are infinite - no stock removal
+        buyer.sendMessage("§a✓ Gekauft für §6" + si.price);
         return true;
     }
 

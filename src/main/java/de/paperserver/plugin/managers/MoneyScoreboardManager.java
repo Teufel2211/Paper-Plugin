@@ -48,6 +48,7 @@ public class MoneyScoreboardManager {
         if (objective == null) {
             setupScoreboard(player);
             objective = scoreboard.getObjective(OBJECTIVE_NAME);
+            return;
         }
 
         if (plugin.getEconomy() == null) {
@@ -55,9 +56,10 @@ public class MoneyScoreboardManager {
         }
 
         double balance = plugin.getEconomy().getBalance(player);
+        String displayText = formatBalance(balance);
 
-        // Clear previous entry and set new balance (single entry with score 1)
-        objective.getScore(formatBalance(balance)).setScore(1);
+        // Update only the single entry (use player name as key to avoid duplicates)
+        objective.getScore(player.getName()).setScore((int) balance);
     }
 
     /**
