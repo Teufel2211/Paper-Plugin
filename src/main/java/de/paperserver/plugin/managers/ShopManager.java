@@ -4,6 +4,7 @@ import de.paperserver.plugin.PaperPluginSuite;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import java.io.File;
 import java.util.*;
 
 public class ShopManager {

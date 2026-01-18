@@ -2,6 +2,7 @@ package de.paperserver.plugin.managers;
 
 import de.paperserver.plugin.PaperPluginSuite;
 import org.bukkit.entity.Player;
+import java.io.File;
 import java.util.*;
 
 public class CrateManager {
