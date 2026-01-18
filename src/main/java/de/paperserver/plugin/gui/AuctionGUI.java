@@ -65,14 +65,7 @@ public class AuctionGUI {
             if (slot >= 54) break;
         }
 
-        // Create auction button
-        ItemStack create = new ItemStack(Material.GREEN_CONCRETE);
-        ItemMeta cm = create.getItemMeta();
-        if (cm != null) {
-            cm.setDisplayName(ChatColor.GREEN + "Create Auction");
-            create.setItemMeta(cm);
-        }
-        inv.setItem(49, create);
+        // (Create button removed - use /auction create or /auction creategui)
 
         return inv;
     }

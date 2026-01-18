@@ -30,11 +30,7 @@ public class AuctionListener implements Listener {
 
         if (title != null && title.contains("Auction House")) {
             e.setCancelled(true);
-            if (e.getRawSlot() == 49) {
-                // Open create inventory
-                p.closeInventory();
-                p.openInventory(AuctionGUI.createCreateInventory(p));
-            } else {
+            else {
                 // Clicked an auction slot -> try place quick bid (min increment)
                 int slot = e.getRawSlot();
                 if (slot >= 0) {

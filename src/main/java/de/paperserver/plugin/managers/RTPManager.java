@@ -67,31 +67,32 @@ public class RTPManager {
         ConfigurationSection cfg = plugin.getConfig().getConfigurationSection("rtp");
         if (cfg == null) return null;
 
-        int minDist = cfg.getInt("teleport.min-distance", 100);
-        int maxDist = cfg.getInt("teleport.max-distance", 10000);
+        int minDist = Math.max(0, cfg.getInt("teleport.min-distance", 100));
+        int maxDist = Math.max(minDist + 1, cfg.getInt("teleport.max-distance", 10000));
         int minHeight = cfg.getInt("teleport.min-height", 60);
-        int maxHeight = cfg.getInt("teleport.max-height", 320);
+        int maxHeight = Math.max(minHeight + 1, cfg.getInt("teleport.max-height", 320));
 
         Random random = ThreadLocalRandom.current();
+        int attempts = cfg.getInt("teleport.search-attempts", 50);
 
-        for (int i = 0; i < 10; i++) {  // Max 10 Versuche
-            int x = random.nextInt(maxDist - minDist) + minDist;
-            if (random.nextBoolean()) x = -x;
+        for (int i = 0; i < attempts; i++) {
+            int dx = random.nextInt(maxDist - minDist + 1) + minDist;
+            if (random.nextBoolean()) dx = -dx;
 
-            int z = random.nextInt(maxDist - minDist) + minDist;
-            if (random.nextBoolean()) z = -z;
+            int dz = random.nextInt(maxDist - minDist + 1) + minDist;
+            if (random.nextBoolean()) dz = -dz;
 
-            // Höhe ermitteln
-            int y = world.getHighestBlockYAt(x, z);
+            int x = dx;
+            int z = dz;
+
+            int highestY = world.getHighestBlockYAt(x, z);
+            int y = highestY;
             if (y < minHeight) y = minHeight;
             if (y > maxHeight) y = maxHeight;
 
             Location loc = new Location(world, x + 0.5, y + 1, z + 0.5);
 
-            // Sicherheitsprüfungen
-            if (isSafeLocation(loc)) {
-                return loc;
-            }
+            if (isSafeLocation(loc)) return loc;
         }
 
         return null;
@@ -100,38 +101,28 @@ public class RTPManager {
     private boolean isSafeLocation(Location loc) {
         ConfigurationSection cfg = plugin.getConfig().getConfigurationSection("rtp");
         if (cfg == null) return false;
-
         Block block = loc.getBlock();
         Block below = loc.clone().add(0, -1, 0).getBlock();
         Block above = loc.clone().add(0, 1, 0).getBlock();
 
-        // Lava-Prüfung
-        if (cfg.getBoolean("safety.check-lava", true)) {
-            if (block.isLiquid() || below.isLiquid()) {
-                return false;
-            }
+        // Lava / Flüssigkeit Prüfung (inkl. Wasser)
+        if (cfg.getBoolean("safety.check-lava", true) || cfg.getBoolean("safety.check-water", true)) {
+            if (block.isLiquid() || below.isLiquid()) return false;
         }
 
-        // Wasser-Prüfung
-        if (cfg.getBoolean("safety.check-water", true)) {
-            if (block.getType() == Material.WATER) {
-                return false;
-            }
-        }
-
-        // Block über Kopf
+        // Block über Kopf muss nicht solid sein
         if (cfg.getBoolean("safety.check-block-above", true)) {
-            if (above.getType() != Material.AIR) {
-                return false;
-            }
+            if (above.getType().isSolid()) return false;
         }
 
-        // Fester Boden
+        // Fester Boden: below sollte solid sein
         if (cfg.getBoolean("safety.check-ground", true)) {
-            if (!below.getType().isSolid()) {
-                return false;
-            }
+            if (!below.getType().isSolid()) return false;
         }
+
+        // Avoid spawning on lava, cactus, fire, magma
+        Material belowType = below.getType();
+        if (belowType == Material.CACTUS || belowType == Material.FIRE || belowType == Material.MAGMA_BLOCK) return false;
 
         return true;
     }

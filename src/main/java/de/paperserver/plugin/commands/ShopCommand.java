@@ -40,6 +40,32 @@ public class ShopCommand implements CommandExecutor {
                 shopManager.createShop(player, args[1]);
                 break;
 
+            case "add":
+                // /shop add <shopId> <price> (uses item in hand)
+                if (args.length < 3) {
+                    player.sendMessage("§c✗ Verwendung: /shop add <shopId> <price> (halte ein Item in der Hand)");
+                    return true;
+                }
+                try {
+                    int shopId = Integer.parseInt(args[1]);
+                    double price = Double.parseDouble(args[2]);
+                    org.bukkit.inventory.ItemStack inHand = player.getInventory().getItemInMainHand();
+                    if (inHand == null || inHand.getType().isAir()) {
+                        player.sendMessage("§c✗ Halte ein Item in der Hand, das du hinzufügen möchtest.");
+                        return true;
+                    }
+                    boolean ok = shopManager.addItem(player, shopId, inHand.clone(), price);
+                    if (ok) {
+                        // consume one item from hand
+                        int amount = inHand.getAmount();
+                        if (amount <= 1) player.getInventory().setItemInMainHand(null);
+                        else inHand.setAmount(amount - 1);
+                    }
+                } catch (NumberFormatException e) {
+                    player.sendMessage("§c✗ Ungültige ID oder Preis!");
+                }
+                break;
+
             case "list":
                 player.sendMessage("§6=== Shops ===");
                 for (ShopManager.ShopData shop : shopManager.getAllShops()) {
