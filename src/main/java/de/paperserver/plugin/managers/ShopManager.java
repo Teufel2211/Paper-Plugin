@@ -124,8 +124,9 @@ public class ShopManager {
             return false;
         }
 
-        if (!shop.owner.equals(owner.getUniqueId()) && !owner.hasPermission("plugin.shop.admin")) {
-            owner.sendMessage("§c✗ Das ist nicht dein Shop!");
+        // Only server admins can add items to shops
+        if (!owner.hasPermission("plugin.shop.admin")) {
+            owner.sendMessage("§c✗ Du darfst keine Items im Shop hinzufügen! Nur Server-Admins dürfen das.");
             return false;
         }
 
@@ -179,8 +180,9 @@ public class ShopManager {
             }
         }
 
-        // give item
+        // give item and decrease shop stock
         org.bukkit.inventory.ItemStack toGive = si.item.clone();
+        toGive.setAmount(1); // Only give 1 item to player
         org.bukkit.entity.Player p = buyer;
         java.util.HashMap<Integer, org.bukkit.inventory.ItemStack> leftover = p.getInventory().addItem(toGive);
         if (!leftover.isEmpty()) {
@@ -188,7 +190,16 @@ public class ShopManager {
             leftover.values().forEach(it -> p.getWorld().dropItemNaturally(p.getLocation(), it));
         }
 
-        buyer.sendMessage("§a✓ Du hast das Item gekauft für " + si.price);
+        // Remove item from shop stock
+        int itemAmount = si.item.getAmount();
+        if (itemAmount > 1) {
+            si.item.setAmount(itemAmount - 1);
+            buyer.sendMessage("§a✓ Gekauft für §6" + si.price + "§a! (" + (itemAmount - 1) + " verbleibend)");
+        } else {
+            // Item is sold out, remove it from shop
+            shop.items.remove(itemId);
+            buyer.sendMessage("§a✓ Gekauft für §6" + si.price + "§a! Dieses Item ist nun ausverkauft.");
+        }
         return true;
     }
 

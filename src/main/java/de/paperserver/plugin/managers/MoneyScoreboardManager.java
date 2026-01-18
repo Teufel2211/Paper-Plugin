@@ -18,19 +18,21 @@ public class MoneyScoreboardManager {
     }
 
     /**
-     * Create or update scoreboard for a player
+     * Create or update scoreboard for a player (only creates if it doesn't exist)
      */
     public void setupScoreboard(Player player) {
         Scoreboard scoreboard = player.getScoreboard();
         
-        // Remove old objective if exists
-        Objective oldObjective = scoreboard.getObjective(OBJECTIVE_NAME);
-        if (oldObjective != null) {
-            oldObjective.unregister();
+        // Check if objective already exists
+        Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
+        if (objective != null) {
+            // Already exists, just update
+            updateMoneyDisplay(player);
+            return;
         }
 
-        // Create new objective
-        Objective objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy", DISPLAY_NAME);
+        // Create new objective only if it doesn't exist
+        objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy", DISPLAY_NAME);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         updateMoneyDisplay(player);

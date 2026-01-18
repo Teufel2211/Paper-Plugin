@@ -195,6 +195,46 @@ public class AuctionManager {
         return new ArrayList<>(auctions.values());
     }
 
+    public boolean buyNow(Player buyer, int auctionId) {
+        AuctionData auction = auctions.get(auctionId);
+        if (auction == null) {
+            buyer.sendMessage("§c✗ Auktion nicht gefunden!");
+            return false;
+        }
+
+        if (buyer.getUniqueId().equals(auction.seller)) {
+            buyer.sendMessage("§c✗ Du kannst deine eigene Auktion nicht kaufen!");
+            return false;
+        }
+
+        double buyPrice = Math.max(auction.startingPrice, auction.highestBid);
+        if (plugin.getEconomy() != null) {
+            if (!plugin.getEconomy().has(buyer, buyPrice)) {
+                buyer.sendMessage("§c✗ Du hast nicht genug Geld! Benötigt: " + buyPrice);
+                return false;
+            }
+
+            plugin.getEconomy().withdrawPlayer(buyer, buyPrice);
+            plugin.getEconomy().depositPlayer(Bukkit.getOfflinePlayer(auction.seller), buyPrice);
+        }
+
+        // Give item to buyer
+        if (auction.item != null) {
+            buyer.getInventory().addItem(auction.item.clone());
+        }
+
+        // Remove auction
+        auctions.remove(auctionId);
+        buyer.sendMessage("§a✓ Auktion gekauft für §6" + buyPrice);
+        
+        org.bukkit.entity.Player seller = Bukkit.getPlayer(auction.seller);
+        if (seller != null && seller.isOnline()) {
+            seller.sendMessage("§a✓ Deine Auktion wurde für §6" + buyPrice + "§a verkauft!");
+        }
+
+        return true;
+    }
+
     public void saveAuctions() {
         if (auctionsConfig == null || auctionsFile == null) return;
         auctionsConfig.set("auctions", null);

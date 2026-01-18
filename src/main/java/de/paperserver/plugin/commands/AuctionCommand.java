@@ -74,6 +74,19 @@ public class AuctionCommand implements CommandExecutor {
                 }
                 break;
 
+            case "buy":
+                if (args.length < 2) {
+                    player.sendMessage("§c✗ Verwendung: /auction buy <auktion_id>");
+                    return true;
+                }
+                try {
+                    int auctionId = Integer.parseInt(args[1]);
+                    auctionManager.buyNow(player, auctionId);
+                } catch (NumberFormatException e) {
+                    player.sendMessage("§c✗ Ungültige Auktions-ID!");
+                }
+                break;
+
             case "list":
                 player.sendMessage("§6=== Aktive Auktionen ===");
                 for (AuctionManager.AuctionData auction : auctionManager.getAllAuctions()) {
