@@ -36,7 +36,7 @@ public class PaperPluginSuite extends JavaPlugin {
 
         // Economy und Permissions Setup
         if (!setupEconomy()) {
-            Logger.error("§cVault nicht gefunden! Economy-Features werden deaktiviert.");
+            Logger.warn("§eEconomy-Features werden deaktiviert.");
         }
 
         if (!setupLuckPerms()) {
@@ -74,13 +74,15 @@ public class PaperPluginSuite extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        if (getServer().getPluginManager().getPlugin("Vault") == null && getServer().getPluginManager().getPlugin("VaultUnlocked") == null) {
+            Logger.error("§cVault (oder VaultUnlocked) nicht gefunden! Bitte installiere es.");
             return false;
         }
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager()
                 .getRegistration(Economy.class);
         if (rsp == null) {
+            Logger.error("§cVault gefunden, aber kein Economy-Plugin (z.B. EssentialsX) erkannt!");
             return false;
         }
 
@@ -99,51 +101,68 @@ public class PaperPluginSuite extends JavaPlugin {
     }
 
     private void initializeManagers() {
-        rtpManager = new RTPManager(this);
-        npcManager = new NPCManager(this);
-        auctionManager = new AuctionManager(this);
-        shopManager = new ShopManager(this);
-        spawnManager = new SpawnManager(this);
-        homeManager = new HomeManager(this);
-        tpaManager = new TPAManager(this);
-        crateManager = new CrateManager(this);
-
-        Logger.info("§a✓ Alle Manager initialisiert.");
+        try {
+            rtpManager = new RTPManager(this);
+            npcManager = new NPCManager(this);
+            auctionManager = new AuctionManager(this);
+            shopManager = new ShopManager(this);
+            spawnManager = new SpawnManager(this);
+            homeManager = new HomeManager(this);
+            tpaManager = new TPAManager(this);
+            crateManager = new CrateManager(this);
+            Logger.info("§a✓ Alle Manager initialisiert.");
+        } catch (Exception e) {
+            Logger.error("§cKritischer Fehler beim Initialisieren der Manager: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void registerCommands() {
-        getCommand("rtp").setExecutor(new RTPCommand(rtpManager));
-        getCommand("npc").setExecutor(new NPCCommand(npcManager));
-        getCommand("auction").setExecutor(new AuctionCommand(auctionManager));
-        getCommand("shop").setExecutor(new ShopCommand(shopManager));
-        getCommand("spawn").setExecutor(new SpawnCommand(spawnManager));
-        getCommand("homes").setExecutor(new HomeCommand(homeManager));
-        getCommand("sethome").setExecutor(new SetHomeCommand(homeManager));
-        getCommand("delhome").setExecutor(new DelHomeCommand(homeManager));
-        getCommand("tpa").setExecutor(new TPACommand(tpaManager));
-        getCommand("tpahere").setExecutor(new TPAHereCommand(tpaManager));
-        getCommand("tpaccept").setExecutor(new TPAAcceptCommand(tpaManager));
-        getCommand("tpdeny").setExecutor(new TPADenyCommand(tpaManager));
-        getCommand("crate").setExecutor(new CrateCommand(crateManager));
+        if (rtpManager != null) getCommand("rtp").setExecutor(new RTPCommand(rtpManager));
+        if (npcManager != null) getCommand("npc").setExecutor(new NPCCommand(npcManager));
+        if (auctionManager != null) getCommand("auction").setExecutor(new AuctionCommand(auctionManager));
+        if (shopManager != null) getCommand("shop").setExecutor(new ShopCommand(shopManager));
+        if (spawnManager != null) getCommand("spawn").setExecutor(new SpawnCommand(spawnManager));
+        
+        if (homeManager != null) {
+            getCommand("homes").setExecutor(new HomeCommand(homeManager));
+            getCommand("sethome").setExecutor(new SetHomeCommand(homeManager));
+            getCommand("delhome").setExecutor(new DelHomeCommand(homeManager));
+        }
+        
+        if (tpaManager != null) {
+            getCommand("tpa").setExecutor(new TPACommand(tpaManager));
+            getCommand("tpahere").setExecutor(new TPAHereCommand(tpaManager));
+            getCommand("tpaccept").setExecutor(new TPAAcceptCommand(tpaManager));
+            getCommand("tpdeny").setExecutor(new TPADenyCommand(tpaManager));
+        }
+        
+        if (crateManager != null) getCommand("crate").setExecutor(new CrateCommand(crateManager));
 
-        Logger.info("§a✓ Alle Commands registriert.");
+        Logger.info("§a✓ Verfügbare Commands registriert.");
     }
 
     private void registerListeners() {
         // RTP Listener
-        getServer().getPluginManager().registerEvents(new RTPListener(rtpManager), this);
+        if (rtpManager != null) getServer().getPluginManager().registerEvents(new RTPListener(rtpManager), this);
 
         // Home Listener
-        getServer().getPluginManager().registerEvents(new HomeListener(homeManager), this);
+        if (homeManager != null) getServer().getPluginManager().registerEvents(new HomeListener(homeManager), this);
 
         // TPA Listener
-        getServer().getPluginManager().registerEvents(new TPAListener(tpaManager), this);
+        if (tpaManager != null) getServer().getPluginManager().registerEvents(new TPAListener(tpaManager), this);
 
         // Crate Listener
-        getServer().getPluginManager().registerEvents(new CrateListener(crateManager), this);
+        if (crateManager != null) getServer().getPluginManager().registerEvents(new CrateListener(crateManager), this);
 
         // NPC Listener
-        getServer().getPluginManager().registerEvents(new NPCListener(npcManager), this);
+        if (npcManager != null) getServer().getPluginManager().registerEvents(new NPCListener(npcManager), this);
+
+        // Auction Listener / GUI
+        if (auctionManager != null) getServer().getPluginManager().registerEvents(new de.paperserver.plugin.listeners.AuctionListener(this), this);
+
+        // Shop Listener
+        if (shopManager != null) getServer().getPluginManager().registerEvents(new de.paperserver.plugin.listeners.ShopListener(this), this);
 
         Logger.info("§a✓ Alle Listener registriert.");
     }

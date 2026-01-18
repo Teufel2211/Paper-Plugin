@@ -24,7 +24,8 @@ public class ShopCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            player.sendMessage("§c✗ Verwendung: /shop <create|list|buy|sell> [args]");
+            // open shop list GUI
+            player.openInventory(de.paperserver.plugin.gui.ShopGUI.createShopListInventory(shopManager));
             return true;
         }
 

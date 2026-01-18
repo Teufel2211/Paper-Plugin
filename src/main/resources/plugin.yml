@@ -5,11 +5,12 @@ author: PaperServer
 main: de.paperserver.plugin.PaperPluginSuite
 api-version: 1.21
 
-depend:
-  - Vault
-  - LuckPerms
+depend: []
 
-softdepend: []
+softdepend:
+  - Vault
+  - VaultUnlocked
+  - LuckPerms
 
 commands:
   rtp:
