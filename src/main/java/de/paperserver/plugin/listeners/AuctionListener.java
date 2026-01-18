@@ -40,16 +40,14 @@ public class AuctionListener implements Listener {
                     // ignore
                 }
                 if (a != null) {
-                    double min = Math.max(a.startingPrice, a.highestBid + 1.0);
-                    boolean ok = auctionManager.placeBid(p, a.id, min);
+                    // Direct buy at starting price
+                    double buyPrice = a.startingPrice;
+                    boolean ok = auctionManager.buyNow(p, a.id);
                     if (ok) {
-                        p.sendMessage(ChatColor.GREEN + "✓ Geboten: " + min);
-                        // Update scoreboard after bid
+                        // Update scoreboard after purchase
                         if (plugin.getMoneyScoreboardManager() != null) {
                             plugin.getMoneyScoreboardManager().updateMoneyDisplay(p);
                         }
-                    } else {
-                        p.sendMessage(ChatColor.RED + "✗ Gebot fehlgeschlagen. Nutze /auction bid <id> <betrag>");
                     }
                 }
             }

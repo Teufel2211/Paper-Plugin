@@ -55,7 +55,7 @@ public class MoneyScoreboardManager {
         double balance = plugin.getEconomy().getBalance(player);
 
         // Clear all old scores to prevent duplicates
-        objective.getScores(player.getName()).forEach(s -> objective.getScoreboard().resetScores(player.getName()));
+        objective.getScoreboard().resetScores(player.getName());
 
         // Set single entry with balance
         objective.getScore("§6Geld: §e" + String.format("%.2f", balance)).setScore(1);
