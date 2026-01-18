@@ -1,30 +1,8 @@
-# Paper Plugin Suite - Crates Konfiguration
-# ================================================================
-# ANLEITUNG: Wie erstelle ich neue Crates?
-# ================================================================
-#
-# CRATE STRUKTUR:
-# crates:
-#   meine-crate:
-#     displayName: "§6Meine Crate"
-#     totalWeight: 100
-#     items:
-#       item1:
-#         itemName: "IRON_INGOT"
-#         amount: 5
-#         weight: 30
-#
-# WEIGHT SYSTEM (Wahrscheinlichkeit):
-# - Weight bestimmt die Dropchance
-# - weight: 50 + weight: 50 = totalWeight 100
-# - Höheres Weight = höhere Chance zu dropppen
-#
-# ================================================================
-
 crates:
   enabled: true
   cooldowns:
     base-seconds: 30
+  # Alle Crate-Definitionen unten:
 
   # ================================================================
   # COMMON CRATE (Anfänger-Crate)
