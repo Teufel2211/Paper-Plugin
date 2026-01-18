@@ -38,6 +38,8 @@ public class CrateManager {
     public CrateManager(PaperPluginSuite plugin) {
         this.plugin = plugin;
         ensureDataFolder();
+        // Reload config to get latest changes
+        reloadCratesConfig();
         loadCrates();
     }
 
@@ -49,8 +51,21 @@ public class CrateManager {
         if (!dataFolder.exists()) dataFolder.mkdirs();
         cratesFile = new File(dataFolder, "crates.yml");
         if (!cratesFile.exists()) {
-            try { cratesFile.createNewFile(); } catch (Exception ignore) {}
+            // Try to copy from resources
+            try {
+                org.bukkit.configuration.file.YamlConfiguration defaultConfig = 
+                    org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(
+                        new java.io.InputStreamReader(
+                            plugin.getResource("config-crates.yml")));
+                defaultConfig.save(cratesFile);
+            } catch (Exception e) {
+                try { cratesFile.createNewFile(); } catch (Exception ignore) {}
+            }
         }
+        reloadCratesConfig();
+    }
+
+    private void reloadCratesConfig() {
         cratesConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(cratesFile);
     }
 
