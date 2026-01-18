@@ -33,17 +33,6 @@ public class PaperPluginSuite extends JavaPlugin {
 
         // Konfigurationen laden
         saveDefaultConfig();
-        
-        // Copy default config files from resources to data folder
-        saveResourceIfNotExists("config-crates.yml");
-        saveResourceIfNotExists("config-auction.yml");
-        saveResourceIfNotExists("config-shop.yml");
-        saveResourceIfNotExists("config-homes.yml");
-        saveResourceIfNotExists("config-rtp.yml");
-        saveResourceIfNotExists("config-spawn.yml");
-        saveResourceIfNotExists("config-tpa.yml");
-        saveResourceIfNotExists("config-npc.yml");
-        
         loadConfigurations();
 
         // Economy und Permissions Setup
@@ -241,36 +230,5 @@ public class PaperPluginSuite extends JavaPlugin {
 
     public MoneyScoreboardManager getMoneyScoreboardManager() {
         return moneyScoreboardManager;
-    }
-
-    /**
-     * Save a resource file from JAR to data folder if it doesn't exist
-     */
-    private void saveResourceIfNotExists(String filename) {
-        try {
-            java.io.File dataFolder = getDataFolder();
-            if (!dataFolder.exists()) {
-                dataFolder.mkdirs();
-            }
-            java.io.File outFile = new java.io.File(dataFolder, filename);
-            
-            if (!outFile.exists()) {
-                // Get resource from JAR
-                java.io.InputStream in = getResource(filename);
-                if (in != null) {
-                    java.io.FileOutputStream out = new java.io.FileOutputStream(outFile);
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = in.read(buf)) > 0) {
-                        out.write(buf, 0, len);
-                    }
-                    out.close();
-                    in.close();
-                    Logger.info("§a✓ Created default config: " + filename);
-                }
-            }
-        } catch (Exception e) {
-            Logger.error("§cFailed to save resource " + filename + ": " + e.getMessage());
-        }
     }
 }

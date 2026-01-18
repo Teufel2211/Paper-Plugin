@@ -50,15 +50,28 @@ public class CrateManager {
         File dataFolder = plugin.getDataFolder();
         if (!dataFolder.exists()) dataFolder.mkdirs();
         cratesFile = new File(dataFolder, "crates.yml");
+        
+        // If file doesn't exist, create it with default content
         if (!cratesFile.exists()) {
-            // Try to copy from resources
             try {
-                org.bukkit.configuration.file.YamlConfiguration defaultConfig = 
-                    org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(
-                        new java.io.InputStreamReader(
-                            plugin.getResource("config-crates.yml")));
-                defaultConfig.save(cratesFile);
+                // Get the default config from resources
+                java.io.InputStream in = plugin.getResource("config-crates.yml");
+                if (in != null) {
+                    java.io.FileOutputStream out = new java.io.FileOutputStream(cratesFile);
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = in.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                    }
+                    out.close();
+                    in.close();
+                    System.out.println("§a[CRATE DEBUG] Created crates.yml from resources");
+                } else {
+                    System.out.println("§c[CRATE DEBUG] config-crates.yml not found in resources!");
+                    cratesFile.createNewFile();
+                }
             } catch (Exception e) {
+                System.out.println("§c[CRATE DEBUG] Error creating crates.yml: " + e.getMessage());
                 try { cratesFile.createNewFile(); } catch (Exception ignore) {}
             }
         }
@@ -67,6 +80,7 @@ public class CrateManager {
 
     private void reloadCratesConfig() {
         cratesConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(cratesFile);
+        System.out.println("§a[CRATE DEBUG] reloadCratesConfig called, file exists: " + cratesFile.exists() + ", size: " + cratesFile.length());
     }
 
     public boolean openCrate(Player player, String crateName) {
