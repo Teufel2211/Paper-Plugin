@@ -143,8 +143,7 @@ public class RTPManager {
             // Allow only specific transparent/safe blocks above
             if (aboveType != Material.TALL_GRASS && aboveType != Material.SEAGRASS &&
                 aboveType != Material.WATER && aboveType != Material.CAVE_AIR &&
-                aboveType != Material.VINE && aboveType != Material.GRASS &&
-                aboveType != Material.TALL_SEAGRASS) {
+                aboveType != Material.VINE && aboveType != Material.TALL_SEAGRASS) {
                 return false;
             }
         }
