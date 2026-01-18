@@ -12,6 +12,7 @@ public class MoneyScoreboardManager {
     private final PaperPluginSuite plugin;
     private static final String OBJECTIVE_NAME = "money";
     private static final String DISPLAY_NAME = "§6§lBalance";
+    private static final String MONEY_ENTRY = "§6Geld"; // Fixed entry name
 
     public MoneyScoreboardManager(PaperPluginSuite plugin) {
         this.plugin = plugin;
@@ -38,6 +39,7 @@ public class MoneyScoreboardManager {
 
     /**
      * Update the money display for a player
+     * Uses a FIXED entry name so only ONE line appears and updates its value
      */
     public void updateMoneyDisplay(Player player) {
         Scoreboard scoreboard = player.getScoreboard();
@@ -54,18 +56,9 @@ public class MoneyScoreboardManager {
 
         double balance = plugin.getEconomy().getBalance(player);
 
-        // Clear all old scores to prevent duplicates
-        objective.getScoreboard().resetScores(player.getName());
-
-        // Set single entry with balance
-        objective.getScore("§6Geld: §e" + String.format("%.2f", balance)).setScore(1);
-    }
-
-    /**
-     * Format balance string for display
-     */
-    private String formatBalance(double balance) {
-        return "§6Geld: §e" + String.format("%.2f", balance);
+        // Use FIXED entry name - this prevents creating new entries
+        // Always update the same "§6Geld" entry with new balance value
+        objective.getScore(MONEY_ENTRY).setScore((int) balance);
     }
 
     /**
