@@ -1,52 +1,190 @@
 # Paper Plugin Suite - Crates Konfiguration
+# ================================================================
+# ANLEITUNG: Wie erstelle ich neue Crates?
+# ================================================================
+#
+# CRATE STRUKTUR:
+# crates:
+#   meine-crate:
+#     displayName: "§6Meine Crate"
+#     totalWeight: 100
+#     items:
+#       item1:
+#         itemName: "IRON_INGOT"
+#         amount: 5
+#         weight: 30
+#
+# WEIGHT SYSTEM (Wahrscheinlichkeit):
+# - Weight bestimmt die Dropchance
+# - weight: 50 + weight: 50 = totalWeight 100
+# - Höheres Weight = höhere Chance zu dropppen
+#
+# ================================================================
 
 crates:
   enabled: true
-  
-  # Crate-Typen
-  types:
-    common:
-      display-name: "§fCommon Crate"
-      rarity-color: "§f"
-      items:
-        stone:
-          item: "STONE"
-          amount: 64
-          weight: 30
-        cobblestone:
-          item: "COBBLESTONE"
-          amount: 64
-          weight: 25
-        oak_log:
-          item: "OAK_LOG"
-          amount: 32
-          weight: 20
-          
-    rare:
-      display-name: "§5Rare Crate"
-      rarity-color: "§5"
-      items:
-        diamond:
-          item: "DIAMOND"
-          amount: 4
-          weight: 15
-        emerald:
-          item: "EMERALD"
-          amount: 2
-          weight: 20
-          
-    epic:
-      display-name: "§aEpic Crate"
-      rarity-color: "§a"
-      items:
-        netherite_ingot:
-          item: "NETHERITE_INGOT"
-          amount: 1
-          weight: 10
-        dragon_egg:
-          item: "DRAGON_EGG"
-          amount: 1
-          weight: 5
+  cooldowns:
+    base-seconds: 30
+
+  # ================================================================
+  # COMMON CRATE (Anfänger-Crate)
+  # ================================================================
+  common:
+    displayName: "§7Common Crate"
+    totalWeight: 100
+    items:
+      item1:
+        itemName: "IRON_INGOT"
+        amount: 5
+        weight: 40
+      item2:
+        itemName: "COAL_ORE"
+        amount: 3
+        weight: 30
+      item3:
+        itemName: "OAK_LOG"
+        amount: 10
+        weight: 30
+
+  # ================================================================
+  # RARE CRATE (Mittel-Crate)
+  # ================================================================
+  rare:
+    displayName: "§9Rare Crate"
+    totalWeight: 100
+    items:
+      item1:
+        itemName: "GOLD_INGOT"
+        amount: 3
+        weight: 35
+      item2:
+        itemName: "DIAMOND_ORE"
+        amount: 2
+        weight: 25
+      item3:
+        itemName: "EMERALD"
+        amount: 1
+        weight: 20
+      item4:
+        itemName: "IRON_INGOT"
+        amount: 8
+        weight: 20
+
+  # ================================================================
+  # EPIC CRATE (Selten-Crate)
+  # ================================================================
+  epic:
+    displayName: "§5Epic Crate"
+    totalWeight: 100
+    items:
+      item1:
+        itemName: "DIAMOND"
+        amount: 3
+        weight: 30
+      item2:
+        itemName: "EMERALD"
+        amount: 2
+        weight: 25
+      item3:
+        itemName: "GOLD_INGOT"
+        amount: 10
+        weight: 25
+      item4:
+        itemName: "NETHERITE_INGOT"
+        amount: 1
+        weight: 20
+
+  # ================================================================
+  # LEGENDARY CRATE (Ultra-Selten-Crate)
+  # ================================================================
+  legendary:
+    displayName: "§6§lLegendary Crate"
+    totalWeight: 100
+    items:
+      item1:
+        itemName: "DIAMOND"
+        amount: 10
+        weight: 30
+      item2:
+        itemName: "NETHERITE_INGOT"
+        amount: 3
+        weight: 25
+      item3:
+        itemName: "EMERALD"
+        amount: 5
+        weight: 25
+      item4:
+        itemName: "BEACON"
+        amount: 1
+        weight: 20
+
+  # ================================================================
+  # MONEY CRATE (Geld-Crate)
+  # ================================================================
+  money:
+    displayName: "§6Money Crate"
+    totalWeight: 100
+    items:
+      item1:
+        itemName: "GOLD_BLOCK"
+        amount: 5
+        weight: 40
+      item2:
+        itemName: "GOLD_INGOT"
+        amount: 20
+        weight: 35
+      item3:
+        itemName: "EMERALD"
+        amount: 10
+        weight: 25
+
+  # ================================================================
+  # BUILDER CRATE (Baublock-Crate)
+  # ================================================================
+  builder:
+    displayName: "§aBuilder Crate"
+    totalWeight: 100
+    items:
+      item1:
+        itemName: "OAK_LOG"
+        amount: 64
+        weight: 25
+      item2:
+        itemName: "STONE"
+        amount: 64
+        weight: 25
+      item3:
+        itemName: "DIRT"
+        amount: 64
+        weight: 25
+      item4:
+        itemName: "OAK_PLANKS"
+        amount: 64
+        weight: 25
+
+  # ================================================================
+  # ORE CRATE (Erz-Crate)
+  # ================================================================
+  ore:
+    displayName: "§8Ore Crate"
+    totalWeight: 100
+    items:
+      item1:
+        itemName: "IRON_ORE"
+        amount: 5
+        weight: 30
+      item2:
+        itemName: "GOLD_ORE"
+        amount: 3
+        weight: 25
+      item3:
+        itemName: "DIAMOND_ORE"
+        amount: 2
+        weight: 25
+      item4:
+        itemName: "LAPIS_ORE"
+        amount: 4
+        weight: 20
           
   # Keys
   keys:
