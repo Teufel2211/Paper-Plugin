@@ -3,6 +3,7 @@ package de.paperserver.plugin.managers;
 import de.paperserver.plugin.PaperPluginSuite;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import java.io.File;
 import java.util.*;
 
 public class HomeManager {
@@ -15,6 +16,11 @@ public class HomeManager {
         this.plugin = plugin;
         ensureDataFolder();
         loadHomes();
+    }
+
+    private void ensureDataFolder() {
+        File dataFolder = plugin.getDataFolder();
+        if (!dataFolder.exists()) dataFolder.mkdirs();
     }
 
     public boolean setHome(Player player, String homeName) {
