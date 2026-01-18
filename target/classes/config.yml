@@ -8,3 +8,5 @@ general:
   language: "en_US"
   # Debug-Modus aktivieren (für detailliertere Logs)
   debug-mode: false
+
+# [19:54:05 ERROR]: [PaperPluginSuite] 19:54:05 [ERROR] - §cVault nicht gefunden! Economy-Features werden deaktiviert.
