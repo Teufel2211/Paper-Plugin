@@ -214,13 +214,20 @@ public class RTPManager {
             return true;
         }
 
-        double cost = plugin.getConfig().getDouble("rtp.cost.amount", 100.0);
         if (plugin.getEconomy() == null) {
             return true;
         }
 
-        if (plugin.getEconomy().has(player, cost)) {
+        double cost = plugin.getConfig().getDouble("rtp.cost.amount", 100.0);
+        double balance = plugin.getEconomy().getBalance(player);
+
+        // Check if player has enough money
+        if (balance >= cost) {
             plugin.getEconomy().withdrawPlayer(player, cost);
+            // Update scoreboard after cost deduction
+            if (plugin.getMoneyScoreboardManager() != null) {
+                plugin.getMoneyScoreboardManager().updateMoneyDisplay(player);
+            }
             return true;
         }
 

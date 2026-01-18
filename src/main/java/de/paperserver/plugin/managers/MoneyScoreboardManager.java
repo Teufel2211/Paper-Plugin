@@ -55,15 +55,19 @@ public class MoneyScoreboardManager {
         double balance = plugin.getEconomy().getBalance(player);
         long balanceLong = Math.round(balance);
 
-        // Update or create score entry
-        objective.getScore(formatBalance(balance)).setScore((int) Math.min(balanceLong, 100000));
+        // Clear old entries
+        objective.getScores().forEach(s -> s.getObjective().getScoreboard().resetScores(s.getEntry()));
+
+        // Add player name and balance as separate lines
+        objective.getScore("§7" + player.getName()).setScore(10);
+        objective.getScore(formatBalance(balance)).setScore(9);
     }
 
     /**
      * Format balance string for display
      */
     private String formatBalance(double balance) {
-        return "§e" + String.format("%.2f", balance);
+        return "§6Geld: §e" + String.format("%.2f", balance);
     }
 
     /**
