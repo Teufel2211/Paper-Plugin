@@ -120,11 +120,11 @@ public class RankManager {
         }
 
         try {
-            var group = plugin.getLuckPerms().getGroupManager().createAndLoadGroup(rankName);
+            var group = plugin.getLuckPerms().getGroupManager().createAndLoadGroup(rankName).join();
             for (String perm : permissions) {
                 group.data().add(Node.builder(perm).build());
             }
-            plugin.getLuckPerms().getGroupManager().saveGroup(group);
+            plugin.getLuckPerms().getGroupManager().saveGroup(group).join();
             admin.sendMessage("§a✓ Rank '" + rankName + "' created with " + permissions.size() + " permissions!");
             return true;
         } catch (Exception e) {

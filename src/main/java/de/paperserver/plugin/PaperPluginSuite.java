@@ -239,6 +239,5 @@ public class PaperPluginSuite extends JavaPlugin {
 
     public RankManager getRankManager() {
         return rankManager;
-        return moneyScoreboardManager;
     }
 }
