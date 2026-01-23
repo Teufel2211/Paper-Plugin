@@ -150,6 +150,15 @@ public class CrateManager {
     }
 
     private CrateItem rollReward(CrateType crateType) {
+        if (crateType.totalWeight <= 0) {
+            System.out.println("§c[CRATE DEBUG] Crate " + crateType.name + " has invalid totalWeight: " + crateType.totalWeight);
+            System.out.println("§c[CRATE DEBUG] Items in crate: " + crateType.items.size());
+            for (CrateItem item : crateType.items.values()) {
+                System.out.println("§c[CRATE DEBUG]   - " + item.itemName + " (weight: " + item.weight + ")");
+            }
+            return null;
+        }
+        
         int random = new Random().nextInt(crateType.totalWeight);
         int current = 0;
 
@@ -160,6 +169,10 @@ public class CrateManager {
             }
         }
 
+        // Fallback: return first item if nothing matched
+        if (!crateType.items.isEmpty()) {
+            return crateType.items.values().iterator().next();
+        }
         return null;
     }
 
@@ -223,7 +236,7 @@ public class CrateManager {
             System.out.println("§a[CRATE DEBUG] Loading crate: " + name + " -> " + disp);
             
             CrateType ct = new CrateType(name, disp);
-            ct.totalWeight = cratesConfig.getInt(path + ".totalWeight", 0);
+            ct.totalWeight = 0; // Recalculate weight from items
             
             if (cratesConfig.getConfigurationSection(path + ".items") != null) {
                 for (String ik : cratesConfig.getConfigurationSection(path + ".items").getKeys(false)) {
@@ -238,6 +251,7 @@ public class CrateManager {
                 }
             }
             
+            System.out.println("§a[CRATE DEBUG] Final totalWeight for " + name + ": " + ct.totalWeight);
             crateTypes.put(name, ct);
         }
         
