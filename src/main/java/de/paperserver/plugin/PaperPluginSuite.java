@@ -25,6 +25,7 @@ public class PaperPluginSuite extends JavaPlugin {
     private TPAManager tpaManager;
     private CrateManager crateManager;
     private MoneyScoreboardManager moneyScoreboardManager;
+    private RankManager rankManager;
 
     @Override
     public void onEnable() {
@@ -112,6 +113,7 @@ public class PaperPluginSuite extends JavaPlugin {
             tpaManager = new TPAManager(this);
             crateManager = new CrateManager(this);
             moneyScoreboardManager = new MoneyScoreboardManager(this);
+            rankManager = new RankManager(this);
             Logger.info("§a✓ Alle Manager initialisiert.");
         } catch (Exception e) {
             Logger.error("§cKritischer Fehler beim Initialisieren der Manager: " + e.getMessage());
@@ -152,6 +154,9 @@ public class PaperPluginSuite extends JavaPlugin {
         if (crateManager != null) getCommand("crate").setTabCompleter(new de.paperserver.plugin.commands.CommandSuggestions(this));
         
         if (economy != null) getCommand("sell").setExecutor(new SellCommand(this));
+        
+        if (rankManager != null) getCommand("ranks").setExecutor(new RankCommand(rankManager));
+        if (rankManager != null) getCommand("ranks").setTabCompleter(new de.paperserver.plugin.commands.CommandSuggestions(this));
 
         Logger.info("§a✓ Verfügbare Commands registriert.");
     }
@@ -229,6 +234,11 @@ public class PaperPluginSuite extends JavaPlugin {
     }
 
     public MoneyScoreboardManager getMoneyScoreboardManager() {
+        return moneyScoreboardManager;
+    }
+
+    public RankManager getRankManager() {
+        return rankManager;
         return moneyScoreboardManager;
     }
 }

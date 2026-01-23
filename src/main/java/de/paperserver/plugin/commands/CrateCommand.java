@@ -43,7 +43,11 @@ public class CrateCommand implements CommandExecutor {
                     return true;
                 }
                 if (args.length < 4) {
-                    sender.sendMessage("§c✗ Verwendung: /crate give <spieler> <crate> <anzahl>");
+                    sender.sendMessage("§c✗ Verwendung: /crate give <spieler> <crate_name> <anzahl>");
+                    sender.sendMessage("§7Verfügbare Crates:");
+                    for (CrateManager.CrateType type : crateManager.getAllCrateTypes()) {
+                        sender.sendMessage("§7  - " + type.name);
+                    }
                     return true;
                 }
                 Player target = sender.getServer().getPlayer(args[1]);
@@ -51,11 +55,12 @@ public class CrateCommand implements CommandExecutor {
                     sender.sendMessage("§c✗ Spieler nicht gefunden!");
                     return true;
                 }
+                String crateName = args[2];
                 try {
                     int amount = Integer.parseInt(args[3]);
-                    crateManager.giveCrate((Player) sender, target, args[2], amount);
+                    crateManager.giveCrate((Player) sender, target, crateName, amount);
                 } catch (NumberFormatException e) {
-                    sender.sendMessage("§c✗ Ungültige Anzahl!");
+                    sender.sendMessage("§c✗ Ungültige Anzahl! Muss eine Zahl sein.");
                 }
                 break;
 
