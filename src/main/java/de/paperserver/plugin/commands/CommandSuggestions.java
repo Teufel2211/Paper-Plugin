@@ -79,6 +79,7 @@ public class CommandSuggestions implements TabCompleter {
                     return List.of("plugin.spawn.set", "plugin.home.set", "plugin.auction.create", "plugin.shop.create", "plugin.crate.use", "plugin.crate.give", "plugin.rtp.use", "plugin.tpa.use");
                 }
                 break;
+            case "homes":
                 if (sender instanceof Player) {
                     return plugin.getHomeManager().getHomes((Player) sender);
                 }
