@@ -192,10 +192,12 @@ public class CrateManager {
         
         System.out.println("§a[CRATE DEBUG] Found crates section with keys: " + cratesConfig.getConfigurationSection("crates").getKeys(false));
         
-        // Skip non-crate keys like "enabled" and "cooldowns"
+        // Skip non-crate keys like "enabled", "cooldowns", "keys", "limits", etc.
         for (String name : cratesConfig.getConfigurationSection("crates").getKeys(false)) {
             // Skip configuration keys that aren't crate definitions
-            if (name.equals("enabled") || name.equals("cooldowns")) {
+            if (name.equals("enabled") || name.equals("cooldowns") || name.equals("keys") || 
+                name.equals("limits") || name.equals("animation") || name.equals("broadcast") || 
+                name.equals("antiabuse") || name.equals("database")) {
                 System.out.println("§a[CRATE DEBUG] Skipping config key: " + name);
                 continue;
             }
