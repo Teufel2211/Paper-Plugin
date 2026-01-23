@@ -17,20 +17,20 @@ public class TPAHereCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von Spielern genutzt werden!");
+            sender.sendMessage("§cThis command can only be used by players!");
             return true;
         }
 
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            player.sendMessage("§c✗ Verwendung: /tpahere <spieler>");
+            player.sendMessage("§c✗ Usage: /tpahere <player>");
             return true;
         }
 
         Player target = player.getServer().getPlayer(args[0]);
         if (target == null) {
-            player.sendMessage("§c✗ Spieler nicht gefunden!");
+            player.sendMessage("§c✗ Player not found!");
             return true;
         }
 

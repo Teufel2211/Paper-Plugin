@@ -18,20 +18,20 @@ public class SellCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von Spielern genutzt werden!");
+            sender.sendMessage("§cThis command can only be used by players!");
             return true;
         }
 
         Player player = (Player) sender;
 
         if (!player.hasPermission("plugin.sell.use")) {
-            player.sendMessage("§c✗ Du darfst diesen Befehl nicht nutzen!");
+            player.sendMessage("§c✗ You don't have permission to use this command!");
             return true;
         }
 
         ItemStack inHand = player.getInventory().getItemInMainHand();
         if (inHand == null || inHand.getType().isAir()) {
-            player.sendMessage("§c✗ Halte ein Item in der Hand, das du verkaufen möchtest.");
+            player.sendMessage("§c✗ Hold an item in your hand that you want to sell.");
             return true;
         }
 
@@ -41,14 +41,14 @@ public class SellCommand implements CommandExecutor {
                        plugin.getConfig().getDouble("sell.default-price", 1.0));
 
         if (price <= 0) {
-            player.sendMessage("§c✗ Dieses Item kann nicht verkauft werden.");
+            player.sendMessage("§c✗ This item cannot be sold.");
             return true;
         }
 
         double totalPrice = price * inHand.getAmount();
 
         if (plugin.getEconomy() == null) {
-            player.sendMessage("§c✗ Economy nicht verfügbar!");
+            player.sendMessage("§c✗ Economy not available!");
             return true;
         }
 
@@ -58,8 +58,8 @@ public class SellCommand implements CommandExecutor {
         // Remove item
         player.getInventory().setItemInMainHand(null);
 
-        player.sendMessage("§a✓ Verkauft: " + inHand.getAmount() + "x " + materialName);
-        player.sendMessage("§6Ertrag: §a+" + totalPrice);
+        player.sendMessage("§a✓ Sold: " + inHand.getAmount() + "x " + materialName);
+        player.sendMessage("§6Profit: §a+" + totalPrice);
         
         // Update scoreboard
         if (plugin.getMoneyScoreboardManager() != null) {

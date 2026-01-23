@@ -85,27 +85,27 @@ public class CrateManager {
 
     public boolean openCrate(Player player, String crateName) {
         if (!player.hasPermission("plugin.crate.use")) {
-            player.sendMessage("§c✗ Du darfst diesen Befehl nicht nutzen!");
+            player.sendMessage("§c✗ You don't have permission to use this command!");
             return false;
         }
 
         if (cooldowns.containsKey(player.getUniqueId())) {
             long remaining = (cooldowns.get(player.getUniqueId()) - System.currentTimeMillis()) / 1000;
             if (remaining > 0) {
-                player.sendMessage("§c✗ Cooldown! " + remaining + "s verbleibend.");
+                player.sendMessage("§c✗ Cooldown! " + remaining + "s remaining.");
                 return false;
             }
         }
 
         CrateType crateType = crateTypes.get(crateName);
         if (crateType == null) {
-            player.sendMessage("§c✗ Crate-Typ '" + crateName + "' nicht gefunden!");
+            player.sendMessage("§c✗ Crate type '" + crateName + "' not found!");
             return false;
         }
 
         CrateItem reward = rollReward(crateType);
         if (reward == null) {
-            player.sendMessage("§c✗ Fehler beim Rollen der Belohnung!");
+            player.sendMessage("§c✗ Error rolling reward!");
             return false;
         }
 
@@ -114,9 +114,9 @@ public class CrateManager {
         if (material != null) {
             org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, reward.amount);
             player.getInventory().addItem(item);
-            player.sendMessage("§a✓ Du hast " + reward.amount + "x " + reward.itemName + " aus der " + crateType.displayName + " gewonnen!");
+            player.sendMessage("§a✓ You received " + reward.amount + "x " + reward.itemName + " from " + crateType.displayName + "!");
         } else {
-            player.sendMessage("§c✗ Item '" + reward.itemName + "' existiert nicht!");
+            player.sendMessage("§c✗ Item '" + reward.itemName + "' does not exist!");
             return false;
         }
 
@@ -126,17 +126,17 @@ public class CrateManager {
 
     public boolean giveCrate(Player admin, Player target, String crateName, int amount) {
         if (!admin.hasPermission("plugin.crate.give")) {
-            admin.sendMessage("§c✗ Du darfst keine Crates geben!");
+            admin.sendMessage("§c✗ You don't have permission to give crates!");
             return false;
         }
 
         if (!crateTypes.containsKey(crateName)) {
-            admin.sendMessage("§c✗ Crate-Typ '" + crateName + "' nicht gefunden!");
+            admin.sendMessage("§c✗ Crate type '" + crateName + "' not found!");
             return false;
         }
 
-        admin.sendMessage("§a✓ " + amount + "x " + crateName + " an " + target.getName() + " gegeben!");
-        target.sendMessage("§a✓ Du hast " + amount + "x " + crateName + " erhalten!");
+        admin.sendMessage("§a✓ " + amount + "x " + crateName + " given to " + target.getName() + "!");
+        target.sendMessage("§a✓ You received " + amount + "x " + crateName + "!");
 
         return true;
     }

@@ -17,14 +17,14 @@ public class DelHomeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von Spielern genutzt werden!");
+            sender.sendMessage("§cThis command can only be used by players!");
             return true;
         }
 
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            player.sendMessage("§c✗ Verwendung: /delhome <name>");
+            player.sendMessage("§c✗ Usage: /delhome <name>");
         } else {
             homeManager.deleteHome(player, args[0]);
         }

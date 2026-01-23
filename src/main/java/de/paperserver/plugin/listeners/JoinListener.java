@@ -16,15 +16,16 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         var p = e.getPlayer();
-        p.sendMessage("§aWillkommen! Verfügbare Befehle:");
-        p.sendMessage("/rtp [welt] - Random teleport");
-        p.sendMessage("/auction - Öffnet Auktionshaus (oder /auction create <preis> mit Item in der Hand)");
-        p.sendMessage("/shop - Öffnet Shop-Liste (/shop add <shopId> <preis> um Item in Hand hinzuzufügen)");
-        p.sendMessage("/spawn - Teleport zum Spawn (/spawn set um zu setzen)");
-        p.sendMessage("/homes, /sethome, /delhome - Home Verwaltung");
-        p.sendMessage("/tpa /tpahere /tpaccept /tpdeny - Teleport-Anfragen");
-        p.sendMessage("/crate - Crate Befehle");
-        p.sendMessage("/sell <preis> - Verkaufe Item in deiner Hand");
+        p.sendMessage("§aWelcome! Available commands:");
+        p.sendMessage("§7/rtp [world] - Random teleport");
+        p.sendMessage("§7/auction - Open Auction House (/auction create <price> with item in hand)");
+        p.sendMessage("§7/shop - Open Shop list (/shop add <shopId> <price> to add item in hand)");
+        p.sendMessage("§7/spawn - Teleport to spawn (/spawn set to set spawn)");
+        p.sendMessage("§7/homes, /sethome, /delhome - Home management");
+        p.sendMessage("§7/tpa, /tpahere, /tpaccept, /tpdeny - Teleport requests");
+        p.sendMessage("§7/crate - Crate commands (/crate open <cratename>, /crate list)");
+        p.sendMessage("§7/sell <price> - Sell item in your hand");
+        p.sendMessage("§7/ranks - Rank and permission management (/ranks list <player>)");
         
         // Setup money scoreboard
         if (plugin.getMoneyScoreboardManager() != null) {

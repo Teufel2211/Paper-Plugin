@@ -17,7 +17,7 @@ public class ShopCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von Spielern genutzt werden!");
+            sender.sendMessage("§cThis command can only be used by players!");
             return true;
         }
 
@@ -34,7 +34,7 @@ public class ShopCommand implements CommandExecutor {
         switch (subcommand) {
             case "create":
                 if (args.length < 2) {
-                    player.sendMessage("§c✗ Verwendung: /shop create <name>");
+                    player.sendMessage("§c✗ Usage: /shop create <name>");
                     return true;
                 }
                 shopManager.createShop(player, args[1]);
@@ -43,7 +43,7 @@ public class ShopCommand implements CommandExecutor {
             case "add":
                 // /shop add <shopId> <price> (uses item in hand)
                 if (args.length < 3) {
-                    player.sendMessage("§c✗ Verwendung: /shop add <shopId> <price> (halte ein Item in der Hand)");
+                    player.sendMessage("§c✗ Usage: /shop add <shopId> <price> (hold an item in your hand)");
                     return true;
                 }
                 try {
@@ -51,7 +51,7 @@ public class ShopCommand implements CommandExecutor {
                     double price = Double.parseDouble(args[2]);
                     org.bukkit.inventory.ItemStack inHand = player.getInventory().getItemInMainHand();
                     if (inHand == null || inHand.getType().isAir()) {
-                        player.sendMessage("§c✗ Halte ein Item in der Hand, das du hinzufügen möchtest.");
+                        player.sendMessage("§c✗ Hold an item in your hand that you want to add.");
                         return true;
                     }
                     boolean ok = shopManager.addItem(player, shopId, inHand.clone(), price);
@@ -62,7 +62,7 @@ public class ShopCommand implements CommandExecutor {
                         else inHand.setAmount(amount - 1);
                     }
                 } catch (NumberFormatException e) {
-                    player.sendMessage("§c✗ Ungültige ID oder Preis!");
+                    player.sendMessage("§c✗ Invalid ID or price!");
                 }
                 break;
 
@@ -74,7 +74,7 @@ public class ShopCommand implements CommandExecutor {
                 break;
 
             default:
-                player.sendMessage("§c✗ Unbekannter Subbefehl!");
+                player.sendMessage("§c✗ Unknown subcommand!");
                 break;
         }
 

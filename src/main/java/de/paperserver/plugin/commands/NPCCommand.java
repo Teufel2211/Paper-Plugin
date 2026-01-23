@@ -17,14 +17,14 @@ public class NPCCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von Spielern genutzt werden!");
+            sender.sendMessage("§cThis command can only be used by players!");
             return true;
         }
 
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            player.sendMessage("§c✗ Verwendung: /npc <create|remove|look|trait> [args]");
+            player.sendMessage("§c✗ Usage: /npc <create|remove|list> [args]");
             return true;
         }
 
@@ -33,7 +33,7 @@ public class NPCCommand implements CommandExecutor {
         switch (subcommand) {
             case "create":
                 if (args.length < 2) {
-                    player.sendMessage("§c✗ Verwendung: /npc create <name>");
+                    player.sendMessage("§c✗ Usage: /npc create <name>");
                     return true;
                 }
                 npcManager.createNPC(player, args[1], player.getWorld().getName());
@@ -41,14 +41,14 @@ public class NPCCommand implements CommandExecutor {
 
             case "remove":
                 if (args.length < 2) {
-                    player.sendMessage("§c✗ Verwendung: /npc remove <id>");
+                    player.sendMessage("§c✗ Usage: /npc remove <id>");
                     return true;
                 }
                 try {
                     int id = Integer.parseInt(args[1]);
                     npcManager.removeNPC(player, id);
                 } catch (NumberFormatException e) {
-                    player.sendMessage("§c✗ Ungültige NPC-ID!");
+                    player.sendMessage("§c✗ Invalid NPC ID!");
                 }
                 break;
 
@@ -60,7 +60,7 @@ public class NPCCommand implements CommandExecutor {
                 break;
 
             default:
-                player.sendMessage("§c✗ Unbekannter Subbefehl!");
+                player.sendMessage("§c✗ Unknown subcommand!");
                 break;
         }
 

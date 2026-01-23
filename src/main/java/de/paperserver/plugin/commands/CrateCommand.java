@@ -17,7 +17,7 @@ public class CrateCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage("§c✗ Verwendung: /crate <open|give|list> [args]");
+            sender.sendMessage("§c✗ Usage: /crate <open|give|list> [args]");
             return true;
         }
 
@@ -26,12 +26,12 @@ public class CrateCommand implements CommandExecutor {
         switch (subcommand) {
             case "open":
                 if (!(sender instanceof Player)) {
-                    sender.sendMessage("§cDieser Befehl kann nur von Spielern genutzt werden!");
+                    sender.sendMessage("§cThis command can only be used by players!");
                     return true;
                 }
                 Player player = (Player) sender;
                 if (args.length < 2) {
-                    player.sendMessage("§c✗ Verwendung: /crate open <crate_name>");
+                    player.sendMessage("§c✗ Usage: /crate open <crate_name>");
                     return true;
                 }
                 crateManager.openCrate(player, args[1]);
@@ -39,12 +39,12 @@ public class CrateCommand implements CommandExecutor {
 
             case "give":
                 if (!sender.hasPermission("plugin.crate.give")) {
-                    sender.sendMessage("§c✗ Du darfst keine Crates geben!");
+                    sender.sendMessage("§c✗ You don't have permission to give crates!");
                     return true;
                 }
                 if (args.length < 4) {
-                    sender.sendMessage("§c✗ Verwendung: /crate give <spieler> <crate_name> <anzahl>");
-                    sender.sendMessage("§7Verfügbare Crates:");
+                    sender.sendMessage("§c✗ Usage: /crate give <player> <crate_name> <amount>");
+                    sender.sendMessage("§7Available Crates:");
                     for (CrateManager.CrateType type : crateManager.getAllCrateTypes()) {
                         sender.sendMessage("§7  - " + type.name);
                     }
@@ -52,7 +52,7 @@ public class CrateCommand implements CommandExecutor {
                 }
                 Player target = sender.getServer().getPlayer(args[1]);
                 if (target == null) {
-                    sender.sendMessage("§c✗ Spieler nicht gefunden!");
+                    sender.sendMessage("§c✗ Player not found!");
                     return true;
                 }
                 String crateName = args[2];
@@ -60,27 +60,23 @@ public class CrateCommand implements CommandExecutor {
                     int amount = Integer.parseInt(args[3]);
                     crateManager.giveCrate((Player) sender, target, crateName, amount);
                 } catch (NumberFormatException e) {
-                    sender.sendMessage("§c✗ Ungültige Anzahl! Muss eine Zahl sein.");
+                    sender.sendMessage("§c✗ Invalid amount! Must be a number.");
                 }
                 break;
 
             case "list":
-                System.out.println("§a[CRATE COMMAND DEBUG] /crate list called");
-                System.out.println("§a[CRATE COMMAND DEBUG] Total crates available: " + crateManager.getAllCrateTypes().size());
                 sender.sendMessage("§6=== Available Crates ===");
                 if (crateManager.getAllCrateTypes().isEmpty()) {
                     sender.sendMessage("§c✗ No crates loaded!");
-                    System.out.println("§c[CRATE COMMAND DEBUG] No crates found!");
                 } else {
                     for (CrateManager.CrateType type : crateManager.getAllCrateTypes()) {
-                        System.out.println("§a[CRATE COMMAND DEBUG] Listing crate: " + type.name + " -> " + type.displayName);
                         sender.sendMessage("§7- " + type.displayName);
                     }
                 }
                 break;
 
             default:
-                sender.sendMessage("§c✗ Unbekannter Subbefehl!");
+                sender.sendMessage("§c✗ Unknown subcommand!");
                 break;
         }
 

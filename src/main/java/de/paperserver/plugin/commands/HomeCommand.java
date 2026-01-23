@@ -17,14 +17,14 @@ public class HomeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("§cDieser Befehl kann nur von Spielern genutzt werden!");
+            sender.sendMessage("§cThis command can only be used by players!");
             return true;
         }
 
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            player.sendMessage("§6=== Deine Homes ===");
+            player.sendMessage("§6=== Your Homes ===");
             for (String home : homeManager.getHomes(player)) {
                 player.sendMessage("§7- " + home);
             }
