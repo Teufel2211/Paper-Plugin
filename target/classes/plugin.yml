@@ -85,6 +85,12 @@ commands:
     usage: /sell <price>
     permission: plugin.sell.use
 
+  ranks:
+    description: Manage player ranks and permissions
+    usage: /ranks <list|give|remove|create> [args]
+    permission: plugin.ranks.use
+    aliases: [rank, permission]
+
 permissions:
   plugin.rtp.*:
     description: All RTP permissions
@@ -155,3 +161,18 @@ permissions:
       plugin.tpa.*: true
       plugin.crate.*: true
       plugin.sell.*: true
+      plugin.ranks.*: true
+
+  plugin.ranks.*:
+    description: All Rank permissions
+    children:
+      plugin.ranks.use: true
+      plugin.ranks.admin: false
+
+  plugin.ranks.use:
+    description: Use rank commands
+    default: true
+
+  plugin.ranks.admin:
+    description: Manage ranks and permissions
+    default: false
