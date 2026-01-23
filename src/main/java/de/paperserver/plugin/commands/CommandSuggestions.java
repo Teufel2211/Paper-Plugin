@@ -34,8 +34,11 @@ public class CommandSuggestions implements TabCompleter {
                 }
                 break;
             case "auction":
-                if (args.length == 1) return List.of("create", "bid", "list", "cancel");
-                if (args.length == 2 && args[0].equalsIgnoreCase("bid")) {
+                if (args.length == 1) return List.of("create", "list", "buy");
+                if (args.length == 2 && args[0].equalsIgnoreCase("create")) {
+                    return List.of("100", "500", "1000", "5000");
+                }
+                if (args.length == 2 && args[0].equalsIgnoreCase("buy")) {
                     AuctionManager am = plugin.getAuctionManager();
                     if (am != null) return am.getAllAuctions().stream().map(a -> String.valueOf(a.id)).collect(Collectors.toList());
                 }
@@ -61,8 +64,21 @@ public class CommandSuggestions implements TabCompleter {
             case "crate":
                 if (args.length == 1) return List.of("open", "give", "list");
                 if (args.length == 2 && args[0].equalsIgnoreCase("open")) return plugin.getCrateManager().getAllCrateTypes().stream().map(c -> c.name).collect(Collectors.toList());
+                if (args.length == 2 && args[0].equalsIgnoreCase("give")) return Bukkit.getOnlinePlayers().stream().map(p -> p.getName()).collect(Collectors.toList());
+                if (args.length == 3 && args[0].equalsIgnoreCase("give")) return plugin.getCrateManager().getAllCrateTypes().stream().map(c -> c.name).collect(Collectors.toList());
+                if (args.length == 4 && args[0].equalsIgnoreCase("give")) return List.of("1", "5", "10");
                 break;
-            case "homes":
+            case "ranks":
+            case "rank":
+            case "permission":
+                if (args.length == 1) return List.of("list", "give", "remove", "create");
+                if (args.length == 2 && (args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("remove"))) {
+                    return Bukkit.getOnlinePlayers().stream().map(p -> p.getName()).collect(Collectors.toList());
+                }
+                if (args.length == 3 && (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("remove"))) {
+                    return List.of("plugin.spawn.set", "plugin.home.set", "plugin.auction.create", "plugin.shop.create", "plugin.crate.use", "plugin.crate.give", "plugin.rtp.use", "plugin.tpa.use");
+                }
+                break;
                 if (sender instanceof Player) {
                     return plugin.getHomeManager().getHomes((Player) sender);
                 }

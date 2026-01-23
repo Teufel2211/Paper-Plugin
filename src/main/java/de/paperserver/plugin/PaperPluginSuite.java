@@ -135,28 +135,30 @@ public class PaperPluginSuite extends JavaPlugin {
         
         if (homeManager != null) {
             getCommand("homes").setExecutor(new HomeCommand(homeManager));
+            getCommand("homes").setTabCompleter(new HomeCommandCompleter(homeManager));
             getCommand("sethome").setExecutor(new SetHomeCommand(homeManager));
             getCommand("delhome").setExecutor(new DelHomeCommand(homeManager));
+            getCommand("delhome").setTabCompleter(new HomeCommandCompleter(homeManager));
         }
         
         if (tpaManager != null) {
             getCommand("tpa").setExecutor(new TPACommand(tpaManager));
-            getCommand("tpa").setTabCompleter(new de.paperserver.plugin.commands.CommandSuggestions(this));
+            getCommand("tpa").setTabCompleter(new TPACommandCompleter());
             getCommand("tpahere").setExecutor(new TPAHereCommand(tpaManager));
-            getCommand("tpahere").setTabCompleter(new de.paperserver.plugin.commands.CommandSuggestions(this));
+            getCommand("tpahere").setTabCompleter(new TPACommandCompleter());
             getCommand("tpaccept").setExecutor(new TPAAcceptCommand(tpaManager));
-            getCommand("tpaccept").setTabCompleter(new de.paperserver.plugin.commands.CommandSuggestions(this));
+            getCommand("tpaccept").setTabCompleter(new TPACommandCompleter());
             getCommand("tpdeny").setExecutor(new TPADenyCommand(tpaManager));
-            getCommand("tpdeny").setTabCompleter(new de.paperserver.plugin.commands.CommandSuggestions(this));
+            getCommand("tpdeny").setTabCompleter(new TPACommandCompleter());
         }
         
         if (crateManager != null) getCommand("crate").setExecutor(new CrateCommand(crateManager));
-        if (crateManager != null) getCommand("crate").setTabCompleter(new de.paperserver.plugin.commands.CommandSuggestions(this));
+        if (crateManager != null) getCommand("crate").setTabCompleter(new CrateCommandCompleter(crateManager));
         
         if (economy != null) getCommand("sell").setExecutor(new SellCommand(this));
         
         if (rankManager != null) getCommand("ranks").setExecutor(new RankCommand(rankManager));
-        if (rankManager != null) getCommand("ranks").setTabCompleter(new de.paperserver.plugin.commands.CommandSuggestions(this));
+        if (rankManager != null) getCommand("ranks").setTabCompleter(new RankCommandCompleter(rankManager));
 
         Logger.info("§a✓ Verfügbare Commands registriert.");
     }

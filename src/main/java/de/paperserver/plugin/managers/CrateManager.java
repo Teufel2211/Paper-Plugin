@@ -109,9 +109,18 @@ public class CrateManager {
             return false;
         }
 
-        player.sendMessage("§a✓ Du hast " + reward.amount + "x " + reward.itemName + " gewonnen!");
-        setCooldown(player);
+        // Create and give the item to the player
+        org.bukkit.Material material = org.bukkit.Material.getMaterial(reward.itemName);
+        if (material != null) {
+            org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, reward.amount);
+            player.getInventory().addItem(item);
+            player.sendMessage("§a✓ Du hast " + reward.amount + "x " + reward.itemName + " aus der " + crateType.displayName + " gewonnen!");
+        } else {
+            player.sendMessage("§c✗ Item '" + reward.itemName + "' existiert nicht!");
+            return false;
+        }
 
+        setCooldown(player);
         return true;
     }
 
